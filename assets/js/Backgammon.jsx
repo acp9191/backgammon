@@ -6,7 +6,7 @@ export default function game_init(root, channel) {
   channel.join()
     .receive('ok', resp => {
       console.log("Joined successfully", resp);
-      ReactDOM.render(<Backgammon channel={channel}/>, root);
+      ReactDOM.render(<Backgammon resp={resp} channel={channel}/>, root);
     })
     .receive('error', resp => {
       console.log("Unable to join", resp);
@@ -18,7 +18,17 @@ class Backgammon extends Component {
   constructor(props) {
     super(props);
     this.channel = props.channel;
-    this.state = {};
+    this.state = {
+      game: props.resp.game
+    };
+
+    this.channel.on('update', resp => {
+      this.update(resp);
+    });
+  }
+
+  update(response) {
+    this.setState(response.game);
   }
 
   render() {

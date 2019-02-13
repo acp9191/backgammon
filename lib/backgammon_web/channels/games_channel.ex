@@ -1,12 +1,23 @@
 defmodule BackgammonWeb.GamesChannel do
   use BackgammonWeb, :channel
 
+  alias Backgammon.Game
+
+  # TODO: GameAgent
   def join("games:" <> name, payload, socket) do
     if authorized?(payload) do
-      {:ok, %{"join" => name}, socket}
+      g = Game.new()
+      socket = socket
+      |> assign(:name, name)
+      {:ok, %{game: Game.client_view(g)}, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
+  end
+
+  def set_game_and_notify(socket, game) do
+    # GameAgent.set(socket.assigns[:name], game)
+    broadcast(socket, "update", %{game: Game.client_view(game)})
   end
 
   # TODO change this
