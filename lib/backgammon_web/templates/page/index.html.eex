@@ -1,6 +1,8 @@
 <section class="row">
-  <article class="column">
-  </article>
-  <article class="column">
-  </article>
+  <div class="row">
+    <div class="column">
+      <h1 id="index-page">Join a Game</h1>
+      <p><a href="/game/demo">Join "demo"</a></p>
+    </div>
+  </div>
 </section>

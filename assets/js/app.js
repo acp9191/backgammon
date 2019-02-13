@@ -15,3 +15,18 @@ import "phoenix_html"
 //
 // Local files can be imported directly using relative paths, for example:
 // import socket from "./socket"
+
+import socket from "./socket";
+import game_init from "./backgammon";
+import $ from 'jquery';
+
+$(() => {
+  let root = document.getElementById('root');
+  if (root) {
+    let channel = socket.channel("games:" + window.gameName, {});
+    // We want to join in the react component.
+    game_init(root, channel);
+  }
+});
+
+
