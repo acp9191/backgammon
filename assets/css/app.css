@@ -1,1 +1,43 @@
 /* This file is for your main application css. */
+
+table {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+  border: 1px solid black;
+}
+
+tr {
+  
+}
+
+td {
+  width: calc(100% / 12);
+  height: 250px;
+  background-color: sandybrown;
+  
+}
+
+.top td div {
+  clip-path: polygon(100% 0, 0 0, 50% 100%);
+}
+
+.top td {
+  vertical-align: top;
+}
+
+.bottom td div{
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+}
+
+.bottom td {
+  vertical-align: bottom;
+}
+
+.red {
+  color: red;
+}
+
+.white {
+  color: black;
+}
