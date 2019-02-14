@@ -18,30 +18,30 @@ defmodule Backgammon.Game do
 
   def init_slots() do
     [
-      %{owner: :white, num: 2},
-      %{},
-      %{},
-      %{},
-      %{},
-      %{owner: :red, num: 5},
-      %{},
-      %{owner: :red, num: 3},
-      %{},
-      %{},
-      %{},
-      %{owner: :white, num: 5},
-      %{owner: :red, num: 5},
-      %{},
-      %{},
-      %{},
-      %{owner: :white, num: 3},
-      %{},
-      %{owner: :white, num: 5},
-      %{},
-      %{},
-      %{},
-      %{},
-      %{owner: :red, num: 2},
+      %{idx: 0, owner: :white, num: 2},
+      %{idx: 1},
+      %{idx: 2},
+      %{idx: 3},
+      %{idx: 4},
+      %{idx: 5, owner: :red, num: 5},
+      %{idx: 6},
+      %{idx: 7, owner: :red, num: 3},
+      %{idx: 8},
+      %{idx: 9},
+      %{idx: 10},
+      %{idx: 11, owner: :white, num: 5},
+      %{idx: 12, owner: :red, num: 5},
+      %{idx: 13},
+      %{idx: 14},
+      %{idx: 15},
+      %{idx: 16, owner: :white, num: 3},
+      %{idx: 17},
+      %{idx: 18, owner: :white, num: 5},
+      %{idx: 19},
+      %{idx: 20},
+      %{idx: 21},
+      %{idx: 22},
+      %{idx: 23, owner: :red, num: 2},
     ]
   end
 
@@ -63,7 +63,7 @@ defmodule Backgammon.Game do
     whose_turn = game.whose_turn
     slots = ordered_slots(game.slots, game.whose_turn)
     if game.knocked[whose_turn] > 0 do
-      [] #knocked_moves(game.slots, game.dice, whose_turn)
+      knocked_moves(game.slots, game.dice, whose_turn)
     else
       possible_moves(slots, game.dice, whose_turn)
     end
@@ -96,33 +96,50 @@ defmodule Backgammon.Game do
 
   # returns all possible moves with the given die in the given slots by the
   # player
-  def moves_with_die(slots, die, player) do
+  def moves_with_die([slot | rest], die, player) do
+    moves_in_rest = moves_with_die(rest, die, player)
+    if Map.has_key?(slot, :owner) and slot.owner == player do
+      move = move_to_slot([slot | rest], die, player)
+      if move do
+        [[slot.idx, move]] ++ moves_in_rest
+      else
+        moves_in_rest
+      end
+    else
+      moves_in_rest
+    end
+  end
 
+  def moves_with_die([], die, player) do
+    []
   end
 
   # returns all possible moves off of the bar into the slots
   def knocked_moves(slots, dice, player) do
     dice
-    |> Enum.filter(&(can_move_to(slots, &1 - 1, player)))
-    |> Enum.map(&([:knocked, &1 - 1]))
+    |> Enum.map(&(move_to_slot(slots, &1 - 1, player)))
+    |> Enum.filter(&(&1 != nil))
+    |> Enum.map(&([:knocked, &1]))
   end
 
-  # determines if the given player can move to a square that's "dice"
-  # slots away
-  def can_move_to([], dice, player) do
-    false
+  # Returns the id of the slot that the player can move to, or nil
+  # if the move is illegal
+  def move_to_slot([], dice, player) do
+    nil
   end
 
-  def can_move_to([slot | rest], 0, player) do
-    slot == %{} or
-    slot.owner == player or
-    slot.num == 1
+  def move_to_slot([slot | rest], 0, player) do
+    if !Map.has_key?(slot, :owner) or
+              slot.owner == player or
+              slot.num == 1 do
+      slot.idx
+    else
+      nil
+    end
   end
 
-  def can_move_to([slot | rest], dice, player) do
-    can_move_to(rest, dice - 1, player)
+  def move_to_slot([slot | rest], dice, player) do
+    move_to_slot(rest, dice - 1, player)
   end
-
-
 
 end
