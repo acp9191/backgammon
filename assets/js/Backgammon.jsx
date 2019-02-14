@@ -68,8 +68,9 @@ class TopRow extends Component {
       if (this.props.slots[i].hasOwnProperty('owner')) {
         let svgs = [];
         for (let j = 0; j < this.props.slots[i].num; j++) {
+          let style = {top: (j * 50) + "px"};
           svgs.push(
-            <svg key={j} height="50" width="50">
+            <svg key={j} height="50" width="50" style={style}>
               <circle cx="25" cy="25" r="23" stroke="black" strokeWidth="2" fill={this.props.slots[i].owner} />
             </svg>
           );
@@ -77,12 +78,12 @@ class TopRow extends Component {
 
         slots.push(
           <td key={i} className={this.props.slots[i].owner}>
-            <div></div>
+            <div className="triangle"></div>
             {svgs}
           </td>
           );
       } else {
-        slots.push(<td key={i}></td>);
+        slots.push(<td key={i}><div className="triangle"></div></td>);
       }
     }
 
@@ -105,8 +106,9 @@ class BottomRow extends Component {
       if (this.props.slots[i].hasOwnProperty('owner')) {
         let svgs = [];
         for (let j = 0; j < this.props.slots[i].num; j++) {
+          let style = {bottom: (j * 50) + "px"};
           svgs.push(
-            <svg key={j} height="50" width="50">
+            <svg key={j} height="50" width="50" style={style}>
               <circle cx="25" cy="25" r="23" stroke="black" strokeWidth="2" fill={this.props.slots[i].owner} />
             </svg>
           );
@@ -114,12 +116,12 @@ class BottomRow extends Component {
 
         slots.push(
           <td key={i} className={this.props.slots[i].owner}>
-            <div></div>
+            <div className="triangle bottom"></div>
             {svgs}
           </td>
           );
       } else {
-        slots.push(<td key={i}></td>);
+        slots.push(<td key={i}><div className="triangle bottom"></div></td>);
       }
     }
 
