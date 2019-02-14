@@ -17,7 +17,7 @@ import "phoenix_html"
 // import socket from "./socket"
 
 import socket from "./socket";
-import game_init from "./backgammon";
+import game_init from "./Backgammon";
 import $ from 'jquery';
 
 $(() => {
