@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-// import { Stage, Layer, Rect, Circle } from 'react-konva';
-// import Konva from 'konva';
 import _ from 'lodash';
-// import {Rectangle, Circle, Ellipse, Line, Polyline, CornerBox, Triangle} from 'react-shapes';
 
-export default function game_init(root, channel) {
+export default function gameInit(root, channel) {
   channel.join()
     .receive('ok', resp => {
       console.log("Joined successfully", resp);
@@ -39,12 +36,8 @@ class Backgammon extends Component {
       <div>
         <table>
           <tbody>
-            <tr className="top">
-              <TopRow slots={this.state.game.slots.slice(0, 12)}/>
-            </tr>
-            <tr className="bottom">
-              <BottomRow slots={this.state.game.slots.slice(12, 24)}/>
-            </tr>
+            <Row position="top" slots={this.state.game.slots.slice(0, 12)}/>
+            <Row position="bottom" slots={this.state.game.slots.slice(12, 24)}/>
           </tbody>
         </table>
       </div>
@@ -52,79 +45,52 @@ class Backgammon extends Component {
   }
 }
 
-
-class TopRow extends Component {
-
+class Row extends Component {
   constructor(props) {
     super(props);
 
     console.log(props);
   }
+
+  getSvgs(slot, position) {
+    let svgs = [];
+    let sideLength = 40;
+
+    if (slot.hasOwnProperty('num')) {
+      for (let j = 0; j < slot.num; j++) {
+        let val = (j * sideLength) + "px"
+        let style = (position == "top" ? {top : val} : {bottom : val});
+        svgs.push(
+          <svg key={j} height={sideLength} width={sideLength} style={style}>
+            <circle cx="20" cy="20" r="18" stroke="black" strokeWidth="2" fill={slot.owner} />
+          </svg>
+        );
+      }
+    } 
+    return svgs;
+  }
+
   render() {
-
     let slots = [];
-
-    for (let i = this.props.slots.length - 1; i >= 0; i--) {
-      if (this.props.slots[i].hasOwnProperty('owner')) {
-        let svgs = [];
-        for (let j = 0; j < this.props.slots[i].num; j++) {
-          let style = {top: (j * 50) + "px"};
-          svgs.push(
-            <svg key={j} height="50" width="50" style={style}>
-              <circle cx="25" cy="25" r="23" stroke="black" strokeWidth="2" fill={this.props.slots[i].owner} />
-            </svg>
-          );
-        }
-
+    let triangle = <div className="triangle"></div>
+    if (this.props.position == "top") {
+      // TODO: figure out how to do this in one for loop
+      for (let i = this.props.slots.length - 1; i >= 0; i--) {
         slots.push(
-          <td key={i} className={this.props.slots[i].owner}>
-            <div className="triangle"></div>
-            {svgs}
-          </td>
-          );
-      } else {
-        slots.push(<td key={i}><div className="triangle"></div></td>);
+          <td key={i} className={this.props.slots[i].owner || ''}>
+            {triangle}
+            {this.getSvgs(this.props.slots[i], this.props.position)}
+          </td>);
+      }
+    } else {
+      for (let i = 0; i < this.props.slots.length; i++) {
+        slots.push(
+          <td key={i} className={this.props.slots[i].owner || ''}>
+            {triangle}
+            {this.getSvgs(this.props.slots[i], this.props.position)}
+          </td>);
       }
     }
-
-    return slots;
-  }
-}
-
-class BottomRow extends Component {
-
-  constructor(props) {
-    super(props);
-
-    console.log(props);
-  }
-  render() {
-
-    let slots = [];
-
-    for (let i = 0; i < this.props.slots.length; i++) {
-      if (this.props.slots[i].hasOwnProperty('owner')) {
-        let svgs = [];
-        for (let j = 0; j < this.props.slots[i].num; j++) {
-          let style = {bottom: (j * 50) + "px"};
-          svgs.push(
-            <svg key={j} height="50" width="50" style={style}>
-              <circle cx="25" cy="25" r="23" stroke="black" strokeWidth="2" fill={this.props.slots[i].owner} />
-            </svg>
-          );
-        }
-
-        slots.push(
-          <td key={i} className={this.props.slots[i].owner}>
-            <div className="triangle bottom"></div>
-            {svgs}
-          </td>
-          );
-      } else {
-        slots.push(<td key={i}><div className="triangle bottom"></div></td>);
-      }
-    }
-
-    return slots;
+    return <tr className={this.props.position}>{slots}</tr>
   }
 }
