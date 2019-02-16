@@ -164,6 +164,7 @@ defmodule Backgammon.Game do
 
   # returns the game state after enacting the given move
   def move(g, move = [from, to]) do
+    IO.inspect(move)
     if valid_move?(g, move) do
       new_slots = update_slots(g.slots, move, g.whose_turn)
       die = die_used(from, to, g.whose_turn)

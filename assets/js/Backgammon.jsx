@@ -25,6 +25,8 @@ class Backgammon extends Component {
     };
 
     this.selectSlot = this.selectSlot.bind(this);
+    this.getRoll = this.getRoll.bind(this);
+    this.makeMove = this.makeMove.bind(this);
 
     this.channel.on('update', resp => {
       this.update(resp);
@@ -32,7 +34,26 @@ class Backgammon extends Component {
   }
 
   update(response) {
-    this.setState(response.game);
+    console.log(response);
+    this.setState({game: response.game});
+  }
+
+  getRoll() {
+    this.channel.push('roll');
+  }
+
+  makeMove(e) {
+
+    console.log("move")
+
+    let td = e.target.parentNode;
+    if (td.tagName == "svg") {
+      td = td.parentNode;
+    }
+
+    if (td.classList.contains("highlighted")) {
+      this.channel.push("move", {move: [this.state.selectedSlot, td.dataset.index]});
+    }
   }
 
   selectSlot(e) {
@@ -40,6 +61,7 @@ class Backgammon extends Component {
     if (td.tagName == "svg") {
       td = td.parentNode;
     }
+
     if (td.classList.contains(this.props.playerColor)) {
       if (this.state.selectedSlot == td.dataset.index) {
         this.setState({ selectedSlot: null, highlightedSlots: []});
@@ -59,6 +81,7 @@ class Backgammon extends Component {
   render() {
     return (
       <div>
+        <button onClick={this.getRoll}>Roll</button>
         <table>
           <tbody>
             {/* REMEMBER: Top row is backwards */}
@@ -66,11 +89,13 @@ class Backgammon extends Component {
                  selectedSlot={this.state.selectedSlot}
                  highlightedSlots={this.state.highlightedSlots}
                  handler={this.selectSlot} 
+                 moveHandler={this.makeMove}
                  slots={this.state.game.slots.slice(0, 12).reverse()}/>
             <Row position="bottom" 
                  selectedSlot={this.state.selectedSlot}
                  highlightedSlots={this.state.highlightedSlots}
                  handler={this.selectSlot} 
+                 moveHandler={this.makeMove}
                  slots={this.state.game.slots.slice(12, 24)}/>
           </tbody>
         </table>
@@ -112,8 +137,12 @@ class Row extends Component {
         slot.owner || '',
         this.props.selectedSlot == slot.idx || this.props.highlightedSlots.includes(slot.idx) ? "highlighted" : ''
        );
+      let handler = this.props.handler;
+      if (this.props.highlightedSlots.includes(slot.idx)) {
+        handler = this.props.moveHandler;
+      }
       slots.push(
-        <td key={slot.idx} data-index={slot.idx} onClick={this.props.handler} className={tdClasses}>
+        <td key={slot.idx} data-index={slot.idx} onClick={handler} className={tdClasses}>
           {triangle}
           {this.getSvgs(slot, this.props.position)}
         </td>);

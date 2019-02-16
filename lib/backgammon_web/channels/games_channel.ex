@@ -6,7 +6,9 @@ defmodule BackgammonWeb.GamesChannel do
   # TODO: GameAgent
   def join("games:" <> name, payload, socket) do
     if authorized?(payload) do
-      g = Game.new()
+      Backgammon.GameServer.reg(name)
+      Backgammon.GameServer.start(name)
+      g = Backgammon.GameServer.peek(name)
       socket = socket
       |> assign(:name, name)
       {:ok, %{game: Game.client_view(g)}, socket}
@@ -22,8 +24,20 @@ defmodule BackgammonWeb.GamesChannel do
 
   # TODO change this
   def handle_in("roll", payload, socket) do
-    resp = %{ "roll" => :rand.uniform(6) }
-    {:reply, {:roll, resp}, socket}
+    g = Backgammon.GameServer.roll(socket.assigns[:name])
+    # resp = %{ "roll" => :rand.uniform(6) }
+    broadcast(socket, "update", %{game: Game.client_view(g)})
+    {:noreply, socket}
+  end
+
+  def handle_in("move", payload, socket) do
+    [from, to] = payload["move"]
+    {from_idx, _} = Integer.parse(from)
+    {to_idx, _} = Integer.parse(to)
+    g = Backgammon.GameServer.move(socket.assigns[:name], [from_idx, to_idx])
+    # resp = %{ "roll" => :rand.uniform(6) }
+    broadcast(socket, "update", %{game: Game.client_view(g)})
+    {:noreply, socket}
   end
 
   # Channels can be used in a request/response fashion
