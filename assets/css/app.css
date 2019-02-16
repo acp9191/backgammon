@@ -76,7 +76,7 @@ td {
   clip-path: polygon(50% 5%, 0 100%, 100% 100%);
 }
 
-svg {
+table svg {
   z-index: 1;
   position: absolute;
   right: calc(50% - 20px);
@@ -98,4 +98,13 @@ svg {
 .white {
   color: black;
   cursor: pointer;
+}
+
+.knocked-container {
+  position: relative;
+  height: 50px;
+}
+
+.knocked-container svg {
+  position: absolute;
 }

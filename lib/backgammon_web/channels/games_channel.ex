@@ -32,12 +32,21 @@ defmodule BackgammonWeb.GamesChannel do
 
   def handle_in("move", payload, socket) do
     [from, to] = payload["move"]
-    {from_idx, _} = Integer.parse(from)
+    from_idx = parseFromVal(from)
     {to_idx, _} = Integer.parse(to)
     g = Backgammon.GameServer.move(socket.assigns[:name], [from_idx, to_idx])
     # resp = %{ "roll" => :rand.uniform(6) }
     broadcast(socket, "update", %{game: Game.client_view(g)})
     {:noreply, socket}
+  end
+
+  def parseFromVal(from) do
+    if (from == "knocked") do
+      :knocked
+    else
+      {from_idx, _} = Integer.parse(from)
+      from_idx
+    end
   end
 
   # Channels can be used in a request/response fashion
