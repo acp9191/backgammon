@@ -46,7 +46,7 @@ defmodule Backgammon.Game do
   end
 
   def client_view(game) do
-    game
+    Map.put(game, :possible_moves, possible_moves(game))
   end
 
   # A Move is:
@@ -65,7 +65,7 @@ defmodule Backgammon.Game do
     if game.knocked[whose_turn] > 0 do
       knocked_moves(game.slots, game.dice, whose_turn)
     else
-      possible_moves(slots, game.dice, whose_turn)
+      possible_moves(slots, game.current_dice, whose_turn)
     end
   end
 
@@ -81,16 +81,13 @@ defmodule Backgammon.Game do
   end
 
   # returns all possible moves by the given player with the given dice roll
-  def possible_moves([], dice, player) do
-    []
-  end
-
   def possible_moves(slots, [], player) do
     []
   end
 
   def possible_moves(slots, [die | rest], player) do
-
+    rest_die_moves = possible_moves(slots, rest, player)
+    rest_die_moves ++ moves_with_die(slots, die, player)
   end
 
 
