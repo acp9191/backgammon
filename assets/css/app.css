@@ -63,6 +63,10 @@ td {
   background-color: sandybrown;
 }
 
+.top .highlighted .triangle, .bottom .highlighted .triangle {
+  background-color: green;
+}
+
 .top .triangle {
   clip-path: polygon(100% 0, 0 0, 50% 95%);
   position: absolute;

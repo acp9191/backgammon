@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import classNames from 'classnames/bind';
 import _ from 'lodash';
 
 export default function gameInit(root, channel) {
   channel.join()
     .receive('ok', resp => {
       console.log("Joined successfully", resp);
-      ReactDOM.render(<Backgammon resp={resp} channel={channel}/>, root);
+      ReactDOM.render(<Backgammon playerColor="white" resp={resp} channel={channel}/>, root);
     })
     .receive('error', resp => {
       console.log("Unable to join", resp);
@@ -14,13 +15,16 @@ export default function gameInit(root, channel) {
 }
 
 class Backgammon extends Component {
-
   constructor(props) {
     super(props);
     this.channel = props.channel;
     this.state = {
-      game: props.resp.game
+      game: props.resp.game,
+      selectedSlot: null,
+      highlightedSlots: []
     };
+
+    this.selectSlot = this.selectSlot.bind(this);
 
     this.channel.on('update', resp => {
       this.update(resp);
@@ -31,13 +35,43 @@ class Backgammon extends Component {
     this.setState(response.game);
   }
 
+  selectSlot(e) {
+    let td = e.target.parentNode;
+    if (td.tagName == "svg") {
+      td = td.parentNode;
+    }
+    if (td.classList.contains(this.props.playerColor)) {
+      if (this.state.selectedSlot == td.dataset.index) {
+        this.setState({ selectedSlot: null, highlightedSlots: []});
+      } else {
+        let moves = [];
+        for (let i = 0; i < this.state.game.possible_moves.length; i++) {
+          let move = this.state.game.possible_moves[i];
+          if (move[0] == td.dataset.index) {
+            moves.push(move[1]);
+          }
+        }
+        this.setState({ selectedSlot: td.dataset.index, highlightedSlots: moves });
+      }
+    }
+  }
+
   render() {
     return (
       <div>
         <table>
           <tbody>
-            <Row position="top" slots={this.state.game.slots.slice(0, 12)}/>
-            <Row position="bottom" slots={this.state.game.slots.slice(12, 24)}/>
+            {/* REMEMBER: Top row is backwards */}
+            <Row position="top" 
+                 selectedSlot={this.state.selectedSlot}
+                 highlightedSlots={this.state.highlightedSlots}
+                 handler={this.selectSlot} 
+                 slots={this.state.game.slots.slice(0, 12).reverse()}/>
+            <Row position="bottom" 
+                 selectedSlot={this.state.selectedSlot}
+                 highlightedSlots={this.state.highlightedSlots}
+                 handler={this.selectSlot} 
+                 slots={this.state.game.slots.slice(12, 24)}/>
           </tbody>
         </table>
       </div>
@@ -48,7 +82,6 @@ class Backgammon extends Component {
 class Row extends Component {
   constructor(props) {
     super(props);
-
     console.log(props);
   }
 
@@ -73,23 +106,17 @@ class Row extends Component {
   render() {
     let slots = [];
     let triangle = <div className="triangle"></div>
-    if (this.props.position == "top") {
-      // TODO: figure out how to do this in one for loop
-      for (let i = this.props.slots.length - 1; i >= 0; i--) {
-        slots.push(
-          <td key={i} className={this.props.slots[i].owner || ''}>
-            {triangle}
-            {this.getSvgs(this.props.slots[i], this.props.position)}
-          </td>);
-      }
-    } else {
-      for (let i = 0; i < this.props.slots.length; i++) {
-        slots.push(
-          <td key={i} className={this.props.slots[i].owner || ''}>
-            {triangle}
-            {this.getSvgs(this.props.slots[i], this.props.position)}
-          </td>);
-      }
+    for (let i = 0; i < this.props.slots.length; i++) {
+      let slot = this.props.slots[i];
+      var tdClasses = classNames(
+        slot.owner || '',
+        this.props.selectedSlot == slot.idx || this.props.highlightedSlots.includes(slot.idx) ? "highlighted" : ''
+       );
+      slots.push(
+        <td key={slot.idx} data-index={slot.idx} onClick={this.props.handler} className={tdClasses}>
+          {triangle}
+          {this.getSvgs(slot, this.props.position)}
+        </td>);
     }
     return <tr className={this.props.position}>{slots}</tr>
   }
