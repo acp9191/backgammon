@@ -46,8 +46,11 @@ defmodule Backgammon.Game do
     ]
   end
 
-  def client_view(game) do
-    Map.put(game, :possible_moves, possible_moves(game))
+  def client_view(game, user) do
+    game
+    |> Map.put(:possible_moves, possible_moves(game))
+    |> Map.put(:color, game.players[user])
+    |> Map.delete(:players)
   end
 
   # A Move is:
@@ -323,7 +326,7 @@ defmodule Backgammon.Game do
   def join(game, name) do
     players = game.players
     if Map.has_key?(players, name) do
-      {:error, "name already taken"}
+      {:ok, game}
     else
       keys = map_size(players)
       case keys do
