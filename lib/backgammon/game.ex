@@ -12,7 +12,8 @@ defmodule Backgammon.Game do
         white: 0,
       },
       whose_turn: :white,
-      current_dice: [4, 5]
+      current_dice: [],
+      players: %{}
     }
   end
 
@@ -142,11 +143,21 @@ defmodule Backgammon.Game do
 
   # Functions from Game -> Game (taking actions on a game)
 
+  def validate_player(g, player) do
+    Map.has_key?(g.players, player) and
+    g.players[player] == g.whose_turn
+  end
+
+
   # roll two die and set them as the current dice, doubling them
   # if they are the same
-  def roll(g) do
-    new_dice = random_dice()
-    Map.put(g, :current_dice, new_dice)
+  def roll(g, player) do
+    if !validate_player(g, player) or length(g.current_dice) > 0 do
+      {:error, "Not your turn, or not valid to roll"}
+    else
+      new_dice = random_dice()
+      {:ok, Map.put(g, :current_dice, new_dice)}
+    end
   end
 
   # randomly generates the new dice for the
@@ -163,27 +174,31 @@ defmodule Backgammon.Game do
 
 
   # returns the game state after enacting the given move
-  def move(g, move = [from, to]) do
-    IO.inspect(move)
-    if valid_move?(g, move) do
-      new_slots = update_slots(g.slots, move, g.whose_turn)
-      die = die_used(from, to, g.whose_turn)
-      new_dice = remove_die(g.current_dice, die)
-      new_player = next_player(g.whose_turn, new_dice)
-      to_slot = Enum.find(g.slots, &(&1.idx == to))
-      new_knocked = g.knocked
-                    |> decrement_knocked(from, g.whose_turn)
-                    |> increment_knocked(to_slot, g.whose_turn)
-      new_home = next_home(g.home, to, g.whose_turn)
-      %{
-        slots: new_slots,
-        knocked: new_knocked,
-        home: new_home,
-        whose_turn: new_player,
-        current_dice: new_dice
-      }
+  def move(g, move = [from, to], player) do
+    if !validate_player(g, player) do
+      {:error, "Not your turn to move."}
     else
-      g
+      if valid_move?(g, move) do
+        new_slots = update_slots(g.slots, move, g.whose_turn)
+        die = die_used(from, to, g.whose_turn)
+        new_dice = remove_die(g.current_dice, die)
+        new_player = next_player(g.whose_turn, new_dice)
+        to_slot = Enum.find(g.slots, &(&1.idx == to))
+        new_knocked = g.knocked
+                      |> decrement_knocked(from, g.whose_turn)
+                      |> increment_knocked(to_slot, g.whose_turn)
+        new_home = next_home(g.home, to, g.whose_turn)
+        {:ok, %{
+          slots: new_slots,
+          knocked: new_knocked,
+          home: new_home,
+          whose_turn: new_player,
+          current_dice: new_dice,
+          players: g.players
+        }}
+      else
+        {:error, "Invalid move."}
+      end
     end
   end
 
@@ -301,6 +316,21 @@ defmodule Backgammon.Game do
       Map.put(home, player, Map.get(home, player) + 1)
     else
       home
+    end
+  end
+
+  # Has the player join the game, if there is a space. First to join is white.
+  def join(game, name) do
+    players = game.players
+    if Map.has_key?(players, name) do
+      {:error, "name already taken"}
+    else
+      keys = map_size(players)
+      case keys do
+         0 -> {:ok, Map.put(game, :players, Map.put(players, name, :white))}
+         1 -> {:ok, Map.put(game, :players, Map.put(players, name, :red))}
+         _ -> {:error, "game is full"}
+      end
     end
   end
 

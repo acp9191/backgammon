@@ -23,9 +23,7 @@ import $ from 'jquery';
 $(() => {
   let root = document.getElementById('root');
   if (root) {
-    let channel = socket.channel("games:" + window.gameName, {});
+    let channel = socket.channel("games:" + window.gameName, {"user": "zach"});
     gameInit(root, channel);
   }
 });
-
-

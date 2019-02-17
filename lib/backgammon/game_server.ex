@@ -20,12 +20,16 @@ defmodule Backgammon.GameServer do
     GenServer.start_link(__MODULE__, game, name: reg(name))
   end
 
-  def move(name, move) do
-    GenServer.call(reg(name), {:move, name, move})
+  def join(name, user) do
+    GenServer.call(reg(name), {:join, name, user})
   end
 
-  def roll(name) do
-    GenServer.call(reg(name), {:roll, name})
+  def move(name, move, user) do
+    GenServer.call(reg(name), {:move, name, move, user})
+  end
+
+  def roll(name, user) do
+    GenServer.call(reg(name), {:roll, name, user})
   end
 
   def peek(name) do
@@ -36,16 +40,34 @@ defmodule Backgammon.GameServer do
     {:ok, game}
   end
 
-  def handle_call({:move, name, move}, _from, game) do
-    game = Backgammon.Game.move(game, move)
-    Backgammon.BackupAgent.put(name, game)
-    {:reply, game, game}
+  def handle_call({:move, name, move, user}, _from, game) do
+    with {:ok, game} <- Backgammon.Game.move(game, move, user) do
+      Backgammon.BackupAgent.put(name, game)
+      {:reply, {:ok, game}, game}
+    else
+      {:error, msg} -> {:reply, {:error, msg}, game}
+      _ -> {:reply, {:error, "unknown error"}, game}
+    end
   end
 
-  def handle_call({:roll, name}, _from, game) do
-    game = Backgammon.Game.roll(game)
-    Backgammon.BackupAgent.put(name, game)
-    {:reply, game, game}
+  def handle_call({:join, name, user}, _from, game) do
+    with {:ok, game} <- Backgammon.Game.join(game, user) do
+      Backgammon.BackupAgent.put(name, game)
+      {:reply, {:ok, game}, game}
+    else
+      {:error, msg} -> {:reply, {:error, msg}, game}
+      _ -> {:reply, {:error, "unknown error"}, game}
+    end
+  end
+
+  def handle_call({:roll, name, user}, _from, game) do
+    with {:ok, game} <- Backgammon.Game.roll(game, user) do
+      Backgammon.BackupAgent.put(name, game)
+      {:reply, {:ok, game}, game}
+    else
+      {:error, msg} -> {:reply, {:error, msg}, game}
+      _ -> {:reply, {:error, "unknown error"}, game}
+    end
   end
 
   def handle_call({:peek, _name}, _from, game) do

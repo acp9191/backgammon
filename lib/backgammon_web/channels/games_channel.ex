@@ -3,54 +3,55 @@ defmodule BackgammonWeb.GamesChannel do
 
   alias Backgammon.Game
 
-  # TODO: GameAgent
-  def join("games:" <> name, payload, socket) do
+  def join("games:" <> name, %{"user" => user} = payload, socket) do
     if authorized?(payload) do
       Backgammon.GameServer.reg(name)
       Backgammon.GameServer.start(name)
-      g = Backgammon.GameServer.peek(name)
+
+      reply = Backgammon.GameServer.join(name, user)
+
       socket = socket
       |> assign(:name, name)
-      {:ok, %{game: Game.client_view(g)}, socket}
+      |> assign(:user, user)
+
+      case reply do
+        {:ok, game} -> {:ok, %{game: Game.client_view(game)}, socket}
+        {:error, msg} -> {:error, %{msg: msg}}
+        _ -> {:error, %{msg: "unknown error"}}
+      end
     else
       {:error, %{reason: "unauthorized"}}
     end
   end
 
   def set_game_and_notify(socket, game) do
-    # GameAgent.set(socket.assigns[:name], game)
     broadcast(socket, "update", %{game: Game.client_view(game)})
   end
 
-  # TODO change this
   def handle_in("roll", payload, socket) do
-    g = Backgammon.GameServer.roll(socket.assigns[:name])
-    # resp = %{ "roll" => :rand.uniform(6) }
-    broadcast(socket, "update", %{game: Game.client_view(g)})
-    {:noreply, socket}
+    g = Backgammon.GameServer.roll(socket.assigns[:name], socket.assigns[:user])
+    case g do
+      {:ok, game} -> broadcast(socket, "update", %{game: Game.client_view(game)})
+          {:noreply, socket}
+      {:error, msg} -> {:reply, {:error, %{msg: msg}}, socket}
+      _ -> {:reply, {:error, %{msg: "unknown error"}}, socket}
+    end
   end
 
   def handle_in("move", payload, socket) do
     [from, to] = payload["move"]
     {from_idx, _} = Integer.parse(from)
     {to_idx, _} = Integer.parse(to)
-    g = Backgammon.GameServer.move(socket.assigns[:name], [from_idx, to_idx])
-    # resp = %{ "roll" => :rand.uniform(6) }
-    broadcast(socket, "update", %{game: Game.client_view(g)})
-    {:noreply, socket}
-  end
+    g = Backgammon.GameServer.move(socket.assigns[:name],
+                                    [from_idx, to_idx],
+                                    socket.assigns[:user])
 
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
-  end
-
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (games:lobby).
-  def handle_in("shout", payload, socket) do
-    broadcast socket, "shout", payload
-    {:noreply, socket}
+    case g do
+      {:ok, game} -> broadcast(socket, "update", %{game: Game.client_view(game)})
+                    {:noreply, socket}
+      {:error, msg} -> {:reply, {:error, %{msg: msg}}, socket}
+      _ -> {:reply, {:error, %{msg: "unknown error"}}, socket}
+    end
   end
 
   # Add authorization logic here as required.
