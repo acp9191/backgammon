@@ -10,7 +10,11 @@ export default function gameInit(root, channel, name) {
     .receive('ok', resp => {
       console.log('Joined successfully', resp);
       ReactDOM.render(
-        <Backgammon playerColor={resp.game.color} resp={resp} channel={channel} />,
+        <Backgammon
+          playerColor={resp.game.color}
+          resp={resp}
+          channel={channel}
+        />,
         root
       );
     })
@@ -47,7 +51,7 @@ class Backgammon extends Component {
   moveIn() {
     let moves = [];
     for (let i = 0; i < this.state.game.possible_moves.length; i++) {
-      moves.push(this.state.game.possible_moves[i][1]);
+      moves.push(this.state.game.possible_moves[i].to);
     }
     this.setState({ selectedSlot: 'knocked', highlightedSlots: moves });
   }
@@ -63,8 +67,13 @@ class Backgammon extends Component {
     }
 
     if (td.classList.contains('highlighted')) {
+      let moveTaken = this.state.game.possible_moves.filter(
+        move =>
+          move.from == this.state.selectedSlot && move.to == td.dataset.index
+      )[0];
+
       this.channel.push('move', {
-        move: [this.state.selectedSlot, td.dataset.index]
+        move: moveTaken
       });
       this.setState({ selectedSlot: null, highlightedSlots: [] });
     }
@@ -83,8 +92,8 @@ class Backgammon extends Component {
         let moves = [];
         for (let i = 0; i < this.state.game.possible_moves.length; i++) {
           let move = this.state.game.possible_moves[i];
-          if (move[0] == td.dataset.index) {
-            moves.push(move[1]);
+          if (move.from == td.dataset.index) {
+            moves.push(move.to);
           }
         }
         this.setState({
