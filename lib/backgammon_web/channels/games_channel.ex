@@ -29,7 +29,7 @@ defmodule BackgammonWeb.GamesChannel do
     broadcast(socket, "update", %{game: Game.client_view(game, user)})
   end
 
-  def handle_in("roll", payload, socket) do
+  def handle_in("roll", _payload, socket) do
     user = socket.assigns[:user]
     g = Backgammon.GameServer.roll(socket.assigns[:name], user)
     case g do
@@ -42,11 +42,11 @@ defmodule BackgammonWeb.GamesChannel do
 
   def handle_in("move", payload, socket) do
     user = socket.assigns[:user]
-    [from, to] = payload["move"]
+    %{"from" => from, "to" => to, "die" => die} = payload["move"]
     from_idx = parseFromVal(from)
-    {to_idx, _} = Integer.parse(to)
+    to_idx = parseToVal(to)
     g = Backgammon.GameServer.move(socket.assigns[:name],
-                                    [from_idx, to_idx],
+                                    %{from: from_idx, to: to_idx, die: die},
                                     user)
 
     case g do
@@ -57,14 +57,11 @@ defmodule BackgammonWeb.GamesChannel do
     end
   end
 
-  def parseFromVal(index) do
-    if index == "knocked" do
-      :knocked
-    else
-      {val, _} = Integer.parse(index)
-      val
-    end
-  end
+  def parseFromVal("knocked"), do: :knocked
+  def parseFromVal(fromIdx) when is_number(fromIdx), do: fromIdx
+
+  def parseToVal("home"), do: :home
+  def parseToVal(toIdx) when is_number(toIdx), do: toIdx
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do

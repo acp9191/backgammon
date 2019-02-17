@@ -94,7 +94,7 @@ defmodule Backgammon.Game do
     if length(poss_moves) == 0 and length(game.current_dice) != 0 do
       updated = game
       |> Map.update(:whose_turn, :white, &(opposite_player(&1)))
-      |> Map.update(:current_dice, [], fn cur_val -> [] end)
+      |> Map.update(:current_dice, [], fn _ -> [] end)
       {:ok, updated}
     else
       {:ok, game}
@@ -103,13 +103,12 @@ defmodule Backgammon.Game do
 
 
   # returns the game state after enacting the given move
-  def move(g, move = [from, to], player) do
+  def move(g, move = %{from: from, to: to, die: die}, player) do
     if !validate_player(g, player) do
       {:error, "Not your turn to move."}
     else
       if valid_move?(g, move) do
         new_slots = update_slots(g.slots, move, g.whose_turn)
-        die = die_used(from, to, g.whose_turn)
         new_dice = remove_die(g.current_dice, die)
         new_player = next_player(g.whose_turn, new_dice)
         to_slot = Enum.find(g.slots, &(&1.idx == to))
@@ -138,14 +137,14 @@ defmodule Backgammon.Game do
   def opposite_player(:white), do: :red
 
   # checks if the given move is valid under the current game state
-  def valid_move?(g, move = [from, to]) do
+  def valid_move?(g, move) do
     move in MoveGenerator.possible_moves(g)
   end
 
   # returns the new slots after the given move by the given player
-  def update_slots([slot | rest], move = [from, to], player) do
+  def update_slots([slot | rest], move = %{from: from, to: to}, player) do
     updated_rest = update_slots(rest, move, player)
-    if slot.idx in move do
+    if slot.idx == from or slot.idx == to do
       [update_slot(slot, move, player) | updated_rest]
     else
       [slot | updated_rest]
@@ -157,7 +156,7 @@ defmodule Backgammon.Game do
   end
 
   # updates the given slot under the given move
-  def update_slot(slot, move = [from, to], player) do
+  def update_slot(slot, %{from: from}, player) do
     cur_num = Map.get(slot, :num) || 0
     if slot.idx == from do
       if cur_num == 1 do
@@ -174,27 +173,6 @@ defmodule Backgammon.Game do
         new_owner
         |> Map.put(:num, cur_num + 1)
       end
-    end
-  end
-
-  # determines which die was used to make the given move
-  def die_used(from, to, _player) when is_number(from) and is_number(to) do
-    abs(from - to)
-  end
-
-  def die_used(:knocked, to, player) do
-    if player == :red do
-      24 - to
-    else
-      to + 1
-    end
-  end
-
-  def die_used(from, :home, player) do
-    if player == :red do
-      24 - from
-    else
-      from + 1
     end
   end
 
@@ -248,7 +226,7 @@ defmodule Backgammon.Game do
   # returns the current number of home players after the move to the given idx
   def next_home(home, to, player) do
     if to == :home do
-      Map.put(home, player, Map.get(home, player) + 1)
+      Map.update(home, player, 1, &(&1 + 1))
     else
       home
     end
