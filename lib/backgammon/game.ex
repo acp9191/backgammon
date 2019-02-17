@@ -70,7 +70,8 @@ defmodule Backgammon.Game do
       {:error, "Not your turn, or not valid to roll"}
     else
       new_dice = random_dice()
-      {:ok, Map.put(g, :current_dice, new_dice)}
+      updated = Map.put(g, :current_dice, new_dice)
+      check_no_moves(updated)
     end
   end
 
@@ -83,6 +84,20 @@ defmodule Backgammon.Game do
       [d1, d2, d1, d2]
     else
       [d1, d2]
+    end
+  end
+
+  # checks if the current player has no moves (but still has dice),
+  # and switches the turn if so
+  def check_no_moves(game) do
+    poss_moves = MoveGenerator.possible_moves(game)
+    if length(poss_moves) == 0 and length(game.current_dice) != 0 do
+      updated = game
+      |> Map.update(:whose_turn, :white, &(opposite_player(&1)))
+      |> Map.update(:current_dice, [], fn cur_val -> [] end)
+      {:ok, updated}
+    else
+      {:ok, game}
     end
   end
 
@@ -112,16 +127,7 @@ defmodule Backgammon.Game do
           players: g.players
         }
 
-        poss_moves = MoveGenerator.possible_moves(g)
-        if length(poss_moves) == 0 and length(g.current_dice) != 0 do
-          updated = g
-          |> Map.update(:whose_turn, :white, &(opposite_player(&1)))
-          |> Map.update(:current_dice, [], fn cur_val -> [] end)
-
-          {:ok, updated}
-        else
-          {:ok, g}
-        end
+        check_no_moves(g)
       else
         {:error, "Invalid move."}
       end
