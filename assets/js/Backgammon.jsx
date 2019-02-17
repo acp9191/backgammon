@@ -4,13 +4,13 @@ import Row from './Row';
 import KnockedPieces from './KnockedPieces';
 import _ from 'lodash';
 
-export default function gameInit(root, channel) {
+export default function gameInit(root, channel, name) {
   channel
     .join()
     .receive('ok', resp => {
       console.log('Joined successfully', resp);
       ReactDOM.render(
-        <Backgammon playerColor="white" resp={resp} channel={channel} />,
+        <Backgammon playerColor={resp.game.color} resp={resp} channel={channel} />,
         root
       );
     })
