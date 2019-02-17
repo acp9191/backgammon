@@ -215,7 +215,7 @@ defmodule Backgammon.Game do
 
   # increments the knocked count for the player who got knocked
   def increment_knocked(knocked, to_slot, player) do
-    if Map.has_key?(to_slot, :owner) and to_slot.owner != player do
+    if to_slot != nil and Map.has_key?(to_slot, :owner) and to_slot.owner != player do
       opponent = to_slot.owner
       Map.update(knocked, opponent, 0, &(&1 + 1))
     else

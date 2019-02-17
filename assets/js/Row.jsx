@@ -58,6 +58,24 @@ export default class Row extends Component {
         </td>
       );
     }
+
+    let homeColor = this.props.position == 'top' ? 'red' : 'white';
+
+    let homeClasses = classNames(
+      'home',
+      this.props.highlightedSlots.includes('home-' + homeColor)
+        ? 'highlighted'
+        : ''
+    );
+
+    slots.push(
+      <td
+        onClick={this.props.moveHomeHandler}
+        key={this.props.position}
+        className={homeClasses}
+      />
+    );
+
     return <tr className={this.props.position}>{slots}</tr>;
   }
 }

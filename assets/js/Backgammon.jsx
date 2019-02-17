@@ -37,6 +37,7 @@ class Backgammon extends Component {
     this.getRoll = this.getRoll.bind(this);
     this.makeMove = this.makeMove.bind(this);
     this.moveIn = this.moveIn.bind(this);
+    this.moveHome = this.moveHome.bind(this);
 
     this.channel.on('update', resp => {
       this.update(resp);
@@ -58,6 +59,21 @@ class Backgammon extends Component {
 
   getRoll() {
     this.channel.push('roll');
+  }
+
+  moveHome(e) {
+    console.log(e.target);
+
+    if (e.target.classList.contains('highlighted')) {
+      let moveTaken = this.state.game.possible_moves.filter(
+        move => move.from == this.state.selectedSlot && move.to == 'home'
+      )[0];
+
+      this.channel.push('move', {
+        move: moveTaken
+      });
+      this.setState({ selectedSlot: null, highlightedSlots: [] });
+    }
   }
 
   makeMove(e) {
@@ -93,7 +109,10 @@ class Backgammon extends Component {
         for (let i = 0; i < this.state.game.possible_moves.length; i++) {
           let move = this.state.game.possible_moves[i];
           if (move.from == td.dataset.index) {
-            moves.push(move.to);
+            let dest =
+              move.to == 'home' ? 'home-' + this.props.playerColor : move.to;
+
+            moves.push(dest);
           }
         }
         this.setState({
@@ -144,6 +163,7 @@ class Backgammon extends Component {
               highlightedSlots={this.state.highlightedSlots}
               handler={this.selectSlot}
               moveHandler={this.makeMove}
+              moveHomeHandler={this.moveHome}
               slots={this.state.game.slots.slice(0, 12).reverse()}
             />
             <Row
@@ -152,6 +172,7 @@ class Backgammon extends Component {
               highlightedSlots={this.state.highlightedSlots}
               handler={this.selectSlot}
               moveHandler={this.makeMove}
+              moveHomeHandler={this.moveHome}
               slots={this.state.game.slots.slice(12, 24)}
             />
           </tbody>
