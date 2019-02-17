@@ -102,19 +102,34 @@ defmodule Backgammon.Game do
                       |> decrement_knocked(from, g.whose_turn)
                       |> increment_knocked(to_slot, g.whose_turn)
         new_home = next_home(g.home, to, g.whose_turn)
-        {:ok, %{
+
+        g = %{
           slots: new_slots,
           knocked: new_knocked,
           home: new_home,
           whose_turn: new_player,
           current_dice: new_dice,
           players: g.players
-        }}
+        }
+
+        poss_moves = MoveGenerator.possible_moves(g)
+        if length(poss_moves) == 0 and length(g.current_dice) != 0 do
+          updated = g
+          |> Map.update(:whose_turn, :white, &(opposite_player(&1)))
+          |> Map.update(:current_dice, [], fn cur_val -> [] end)
+
+          {:ok, updated}
+        else
+          {:ok, g}
+        end
       else
         {:error, "Invalid move."}
       end
     end
   end
+
+  def opposite_player(:red), do: :white
+  def opposite_player(:white), do: :red
 
   # checks if the given move is valid under the current game state
   def valid_move?(g, move = [from, to]) do
