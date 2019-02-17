@@ -40,7 +40,7 @@ defmodule BackgammonWeb.GamesChannel do
 
   def handle_in("move", payload, socket) do
     [from, to] = payload["move"]
-    {from_idx, _} = Integer.parse(from)
+    from_idx = parseFromVal(from)
     {to_idx, _} = Integer.parse(to)
     g = Backgammon.GameServer.move(socket.assigns[:name],
                                     [from_idx, to_idx],
