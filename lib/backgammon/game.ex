@@ -67,7 +67,7 @@ defmodule Backgammon.Game do
     whose_turn = game.whose_turn
     slots = ordered_slots(game.slots, game.whose_turn)
     if game.knocked[whose_turn] > 0 do
-      knocked_moves(game.slots, game.current_dice, whose_turn)
+      knocked_moves(slots, game.current_dice, whose_turn)
     else
       possible_moves(slots, game.current_dice, whose_turn)
     end
