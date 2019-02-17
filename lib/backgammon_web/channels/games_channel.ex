@@ -54,6 +54,15 @@ defmodule BackgammonWeb.GamesChannel do
     end
   end
 
+  def parseFromVal(index) do
+    if index == "knocked" do
+      :knocked
+    else
+      {val, _} = Integer.parse(index)
+      val
+    end
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
