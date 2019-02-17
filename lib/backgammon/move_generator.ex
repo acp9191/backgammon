@@ -46,7 +46,32 @@ defmodule Backgammon.MoveGenerator do
   # Returns all moves into the home slot using the current slots, and the
   # given dice
   def moves_home_with_dice(slots, dice, player) do
-    []
+    home_board = Enum.drop(slots, 18)
+
+    bear_off_slots = dice
+    |> Enum.map(&([Enum.fetch(home_board, 6 - &1), &1]))
+    |> Enum.map(fn fetched ->
+                  [{:ok, slot}, die] = fetched
+                  {slot, die}
+                end)
+
+    moves_home = bear_off_slots
+    |> Enum.filter(&(can_move_from?(&1, player)))
+    |> Enum.map(&(convert_to_move(&1)))
+
+    moves_home
+  end
+
+  def convert_to_move({slot, die}) do
+    %{
+      from: slot.idx,
+      to: :home,
+      die: die
+    }
+  end
+
+  def can_move_from?({slot, die}, player) do
+    Map.has_key?(slot, :owner) and slot.owner == player
   end
 
   # Returns the slots ordered such that the player whose
