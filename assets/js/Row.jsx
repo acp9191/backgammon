@@ -31,9 +31,35 @@ export default class Row extends Component {
     return svgs;
   }
 
+  getHomePieces(count, color, position) {
+    let height = 250 / 15;
+    let width = 50;
+    let svgs = [];
+
+    if (count > 0) {
+      for (let i = 0; i < count; i++) {
+        let val = i * height + 'px';
+        let style = position == 'top' ? { top: val } : { bottom: val };
+        svgs.push(
+          <svg key={i} height={height} width={width} style={style}>
+            <rect
+              height={height}
+              width={width}
+              stroke="black"
+              strokeWidth="2"
+              fill={color}
+            />
+          </svg>
+        );
+      }
+    }
+    return svgs;
+  }
+
   render() {
     let slots = [];
     let triangle = <div className="triangle" />;
+    // TODO: create middle row
     for (let i = 0; i < this.props.slots.length; i++) {
       let slot = this.props.slots[i];
       var tdClasses = classNames(
@@ -73,7 +99,13 @@ export default class Row extends Component {
         onClick={this.props.moveHomeHandler}
         key={this.props.position}
         className={homeClasses}
-      />
+      >
+        {this.getHomePieces(
+          this.props.homeCount,
+          homeColor,
+          this.props.position
+        )}
+      </td>
     );
 
     return <tr className={this.props.position}>{slots}</tr>;

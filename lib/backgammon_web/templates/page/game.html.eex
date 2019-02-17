@@ -5,7 +5,7 @@
 
 <div class="row">
   <div class="column">
-    <h1>Backgammon Game: <%= @game %></h1>
+    <h1>Hi <%= @name %>! You are in game lobby: <%= @game %></h1>
     <div id="root">
       <p>React app not loaded...</p>
     </div>

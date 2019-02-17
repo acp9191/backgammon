@@ -2,6 +2,8 @@
 
 body,
 table {
+  font-family: 'Roboto',
+    sans-serif;
   -webkit-animation: fadein 2s;
   /* Safari, Chrome and Opera > 12.1 */
   -moz-animation: fadein 2s;
@@ -69,7 +71,7 @@ table {
 
 
 table {
-  width: 80%;
+  width: 800px;
   margin: 0 auto;
   text-align: center;
   border: 1px solid black;
@@ -122,6 +124,10 @@ table svg {
   right: calc(50% - 20px);
 }
 
+table .home svg {
+  right: calc(50% - 25px);
+}
+
 .top td {
   vertical-align: top;
 }
@@ -147,4 +153,18 @@ table svg {
 
 .knocked-container svg {
   position: absolute;
+}
+
+span:not(.empty) {
+  width: 150px;
+  display: inline-block;
+}
+
+.subheader-wrapper {
+  height: 25px;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
 }

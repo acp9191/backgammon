@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Row from './Row';
 import KnockedPieces from './KnockedPieces';
+import Die from './Die';
 import _ from 'lodash';
 
 export default function gameInit(root, channel, name) {
@@ -62,9 +63,15 @@ class Backgammon extends Component {
   }
 
   moveHome(e) {
-    console.log(e.target);
+    let td = e.target;
+    if (td.tagName == 'svg' || td.tagName == 'rect') {
+      td = td.parentNode;
+    }
+    if (td.tagName == 'svg') {
+      td = td.parentNode;
+    }
 
-    if (e.target.classList.contains('highlighted')) {
+    if (td.classList.contains('highlighted')) {
       let moveTaken = this.state.game.possible_moves.filter(
         move => move.from == this.state.selectedSlot && move.to == 'home'
       )[0];
@@ -124,18 +131,18 @@ class Backgammon extends Component {
   }
 
   render() {
-    let filler = <div />;
+    let filler = <span className="empty" />;
     let yourTurn =
       this.state.game.whose_turn == this.props.playerColor ? (
-        <div>Your Turn</div>
+        <span>It is your turn</span>
       ) : (
-        filler
+        <span>Waiting on opponent</span>
       );
 
     let yourRoll =
       this.state.game.current_dice.length > 0 &&
       this.state.game.whose_turn == this.props.playerColor ? (
-        <div>Your roll: {this.state.game.current_dice.join(' ')}</div>
+        <span>Your roll: {this.state.game.current_dice.join(' ')}</span>
       ) : (
         filler
       );
@@ -150,10 +157,14 @@ class Backgammon extends Component {
 
     return (
       <div>
-        <div>You are {this.props.playerColor}</div>
-        {rollBtn}
-        {yourRoll}
-        {yourTurn}
+        <div className="subheader-wrapper">
+          {/* <Die />
+          <img src={require('../static/images/dice-six-faces-one.svg')} /> */}
+          <span>You are {this.props.playerColor}</span>
+          {yourTurn}
+          {rollBtn}
+          {yourRoll}
+        </div>
         <KnockedPieces knocked={this.state.game.knocked} moveIn={this.moveIn} />
         <table>
           <tbody>
@@ -164,6 +175,7 @@ class Backgammon extends Component {
               handler={this.selectSlot}
               moveHandler={this.makeMove}
               moveHomeHandler={this.moveHome}
+              homeCount={this.state.game.home.red}
               slots={this.state.game.slots.slice(0, 12).reverse()}
             />
             <Row
@@ -173,6 +185,7 @@ class Backgammon extends Component {
               handler={this.selectSlot}
               moveHandler={this.makeMove}
               moveHomeHandler={this.moveHome}
+              homeCount={this.state.game.home.white}
               slots={this.state.game.slots.slice(12, 24)}
             />
           </tbody>
