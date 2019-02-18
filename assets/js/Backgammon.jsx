@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Row from './Row';
-import KnockedPieces from './KnockedPieces';
-import Die from './Die';
 import _ from 'lodash';
 
 export default function gameInit(root, channel, name) {
@@ -157,6 +155,13 @@ class Backgammon extends Component {
         filler
       );
 
+    let winner = filler;
+    if (this.state.game.winner == this.props.playerColor) {
+      winner = <span>You won!</span>;
+    } else if (this.state.game.winner) {
+      winner = <span>You lost!</span>;
+    }
+
     let topSlots =
       playerColor == 'white'
         ? this.state.game.slots.slice(0, 12).reverse()
@@ -171,7 +176,7 @@ class Backgammon extends Component {
     let rows = (
       <tbody>
         <Row
-          position="top"
+          isTop={true}
           color={topColor}
           selectedSlot={this.state.selectedSlot}
           highlightedSlots={this.state.highlightedSlots}
@@ -179,33 +184,39 @@ class Backgammon extends Component {
           moveHandler={this.makeMove}
           moveHomeHandler={this.moveHome}
           homeCount={this.state.game.home[topColor]}
+          knockedCount={this.state.game.knocked[topColor]}
           slots={topSlots}
         />
         <Row
-          position="bottom"
+          isTop={false}
           color={playerColor}
           selectedSlot={this.state.selectedSlot}
           highlightedSlots={this.state.highlightedSlots}
           handler={this.selectSlot}
           moveHandler={this.makeMove}
           moveHomeHandler={this.moveHome}
+          moveInHandler={this.moveIn}
           homeCount={this.state.game.home[playerColor]}
+          knockedCount={this.state.game.knocked[playerColor]}
           slots={bottomSlots}
         />
       </tbody>
     );
 
+    let style = {
+      height: '50px',
+      width: '50px'
+    };
+
     return (
       <div>
         <div className="subheader-wrapper">
-          {/* <Die />
-          <img src={require('../static/images/dice-six-faces-one.svg')} /> */}
           <span>You are {playerColor}</span>
           {yourTurn}
           {rollBtn}
           {yourRoll}
+          {winner}
         </div>
-        <KnockedPieces knocked={this.state.game.knocked} moveIn={this.moveIn} />
         <table>{rows}</table>
       </div>
     );

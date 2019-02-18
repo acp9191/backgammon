@@ -6,132 +6,137 @@ export default class Row extends Component {
     super(props);
   }
 
-  getSvgs(slot, position) {
+  drawPieces(count, color, isTop, isHome) {
+    const height = 250 / 15;
+    const width = 50;
+    const sideLength = 40;
     let svgs = [];
-    let sideLength = 40;
 
+    for (let i = 0; i < count; i++) {
+      let val = isHome ? i * height + 'px' : i * sideLength + 'px';
+      let style = isTop ? { top: val } : { bottom: val };
+
+      let svg = isHome ? (
+        <svg key={i} height={height} width={width} style={style}>
+          <rect
+            height={height}
+            width={width}
+            stroke="black"
+            strokeWidth="2"
+            fill={color}
+          />
+        </svg>
+      ) : (
+        <svg key={i} height={sideLength} width={sideLength} style={style}>
+          <circle
+            cx="20"
+            cy="20"
+            r="18"
+            stroke="black"
+            strokeWidth="2"
+            fill={color}
+          />
+        </svg>
+      );
+      svgs.push(svg);
+    }
+
+    return svgs;
+  }
+
+  getSvgs(slot, isTop) {
+    let svgs = [];
     if (slot.hasOwnProperty('num')) {
-      for (let j = 0; j < slot.num; j++) {
-        let val = j * sideLength + 'px';
-        let style = position == 'top' ? { top: val } : { bottom: val };
-        svgs.push(
-          <svg key={j} height={sideLength} width={sideLength} style={style}>
-            <circle
-              cx="20"
-              cy="20"
-              r="18"
-              stroke="black"
-              strokeWidth="2"
-              fill={slot.owner}
-            />
-          </svg>
-        );
-      }
+      svgs = this.drawPieces(slot.num, slot.owner, isTop, false);
     }
     return svgs;
   }
 
-  getHomePieces(count, color, position) {
-    let height = 250 / 15;
-    let width = 50;
+  getHomePieces(count, color, isTop) {
     let svgs = [];
-
     if (count > 0) {
-      for (let i = 0; i < count; i++) {
-        let val = i * height + 'px';
-        let style = position == 'top' ? { top: val } : { bottom: val };
-        svgs.push(
-          <svg key={i} height={height} width={width} style={style}>
-            <rect
-              height={height}
-              width={width}
-              stroke="black"
-              strokeWidth="2"
-              fill={color}
-            />
-          </svg>
-        );
-      }
+      svgs = this.drawPieces(count, color, isTop, true);
+    }
+    return svgs;
+  }
+
+  getKnocked(count, color, isTop) {
+    let svgs = [];
+    if (count > 0) {
+      svgs = this.drawPieces(count, color, isTop, false);
     }
     return svgs;
   }
 
   render() {
     const {
-      position,
+      isTop,
       color,
       selectedSlot,
       highlightedSlots,
       handler,
       moveHandler,
       moveHomeHandler,
+      moveInHandler,
       homeCount,
+      knockedCount,
       slots
     } = this.props;
 
-    let isBlack = true;
-    if (this.props.position == 'top') {
-      isBlack = false;
-    }
+    let isBlack = isTop ? false : true;
 
     let returnSlots = [];
-    let triangle = <div className="triangle" />;
-    for (let i = 0; i < this.props.slots.length; i++) {
+
+    for (let i = 0; i < slots.length; i++) {
+      let slot = slots[i];
       if (i == 6) {
         returnSlots.push(
-          <td key={'knocked-' + this.props.color} className="knocked" />
+          <td
+            key={'knocked-' + color}
+            onClick={moveInHandler}
+            className="knocked"
+          >
+            {this.getKnocked(knockedCount, color, !isTop)}
+          </td>
         );
       }
-
-      let slot = this.props.slots[i];
-      var tdClasses = classNames(
+      let tdClasses = classNames(
         isBlack ? 'black' : '',
         slot.owner || '',
-        this.props.selectedSlot == slot.idx ||
-          this.props.highlightedSlots.includes(slot.idx)
+        selectedSlot == slot.idx || highlightedSlots.includes(slot.idx)
           ? 'highlighted'
           : ''
       );
-      let handler = this.props.highlightedSlots.includes(slot.idx)
-        ? this.props.moveHandler
-        : this.props.handler;
+      let clickHandler = highlightedSlots.includes(slot.idx)
+        ? moveHandler
+        : handler;
       returnSlots.push(
         <td
           key={slot.idx}
           data-index={slot.idx}
-          onClick={handler}
+          onClick={clickHandler}
           className={tdClasses}
         >
-          {triangle}
-          {this.getSvgs(slot, this.props.position)}
+          <div className="triangle" />
+          {this.getSvgs(slot, isTop)}
         </td>
       );
       isBlack = !isBlack;
     }
 
-    let homeColor = this.props.color;
-
     let homeClasses = classNames(
       'home',
-      this.props.highlightedSlots.includes('home-' + homeColor)
-        ? 'highlighted'
-        : ''
+      highlightedSlots.includes('home-' + color) ? 'highlighted' : ''
     );
 
     returnSlots.push(
-      <td
-        onClick={this.props.moveHomeHandler}
-        key={this.props.position}
-        className={homeClasses}
-      >
-        {this.getHomePieces(
-          this.props.homeCount,
-          homeColor,
-          this.props.position
-        )}
+      <td onClick={moveHomeHandler} key={isTop} className={homeClasses}>
+        {this.getHomePieces(homeCount, color, isTop)}
       </td>
     );
 
-    return <tr className={this.props.position}>{returnSlots}</tr>;
+    let rowClass = isTop ? 'top' : 'bottom';
+
+    return <tr className={rowClass}>{returnSlots}</tr>;
   }
 }
