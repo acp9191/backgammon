@@ -57,9 +57,13 @@ export default class Row extends Component {
   }
 
   render() {
+    let isBlack = true;
+    if (this.props.position == 'top') {
+      isBlack = false;
+    }
+
     let slots = [];
     let triangle = <div className="triangle" />;
-    // TODO: create middle row
     for (let i = 0; i < this.props.slots.length; i++) {
       if (i == 6) {
         slots.push(
@@ -69,6 +73,7 @@ export default class Row extends Component {
 
       let slot = this.props.slots[i];
       var tdClasses = classNames(
+        isBlack ? 'black' : '',
         slot.owner || '',
         this.props.selectedSlot == slot.idx ||
           this.props.highlightedSlots.includes(slot.idx)
@@ -89,6 +94,7 @@ export default class Row extends Component {
           {this.getSvgs(slot, this.props.position)}
         </td>
       );
+      isBlack = !isBlack;
     }
 
     let homeColor = this.props.color;

@@ -107,23 +107,23 @@ class Backgammon extends Component {
     if (td.tagName == 'svg') {
       td = td.parentNode;
     }
+    let idx = td.dataset.index;
 
     if (td.classList.contains(this.props.playerColor)) {
-      if (this.state.selectedSlot == td.dataset.index) {
+      if (this.state.selectedSlot == idx) {
         this.setState({ selectedSlot: null, highlightedSlots: [] });
       } else {
         let moves = [];
         for (let i = 0; i < this.state.game.possible_moves.length; i++) {
           let move = this.state.game.possible_moves[i];
-          if (move.from == td.dataset.index) {
+          if (move.from == idx) {
             let dest =
               move.to == 'home' ? 'home-' + this.props.playerColor : move.to;
-
             moves.push(dest);
           }
         }
         this.setState({
-          selectedSlot: td.dataset.index,
+          selectedSlot: idx,
           highlightedSlots: moves
         });
       }
