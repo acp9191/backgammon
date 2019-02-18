@@ -131,9 +131,11 @@ class Backgammon extends Component {
   }
 
   render() {
+    const { playerColor } = this.props;
+
     let filler = <span className="empty" />;
     let yourTurn =
-      this.state.game.whose_turn == this.props.playerColor ? (
+      this.state.game.whose_turn == playerColor ? (
         <span>It is your turn</span>
       ) : (
         <span>Waiting on opponent</span>
@@ -141,7 +143,7 @@ class Backgammon extends Component {
 
     let yourRoll =
       this.state.game.current_dice.length > 0 &&
-      this.state.game.whose_turn == this.props.playerColor ? (
+      this.state.game.whose_turn == playerColor ? (
         <span>Your roll: {this.state.game.current_dice.join(' ')}</span>
       ) : (
         filler
@@ -149,47 +151,62 @@ class Backgammon extends Component {
 
     let rollBtn =
       this.state.game.current_dice.length == 0 &&
-      this.state.game.whose_turn == this.props.playerColor ? (
+      this.state.game.whose_turn == playerColor ? (
         <button onClick={this.getRoll}>Roll</button>
       ) : (
         filler
       );
+
+    let topSlots =
+      playerColor == 'white'
+        ? this.state.game.slots.slice(0, 12).reverse()
+        : this.state.game.slots.slice(12, 24);
+    let bottomSlots =
+      playerColor == 'white'
+        ? this.state.game.slots.slice(12, 24)
+        : this.state.game.slots.slice(0, 12).reverse();
+
+    let topColor = playerColor == 'white' ? 'red' : 'white';
+
+    let rows = (
+      <tbody>
+        <Row
+          position="top"
+          color={topColor}
+          selectedSlot={this.state.selectedSlot}
+          highlightedSlots={this.state.highlightedSlots}
+          handler={this.selectSlot}
+          moveHandler={this.makeMove}
+          moveHomeHandler={this.moveHome}
+          homeCount={this.state.game.home[topColor]}
+          slots={topSlots}
+        />
+        <Row
+          position="bottom"
+          color={playerColor}
+          selectedSlot={this.state.selectedSlot}
+          highlightedSlots={this.state.highlightedSlots}
+          handler={this.selectSlot}
+          moveHandler={this.makeMove}
+          moveHomeHandler={this.moveHome}
+          homeCount={this.state.game.home[playerColor]}
+          slots={bottomSlots}
+        />
+      </tbody>
+    );
 
     return (
       <div>
         <div className="subheader-wrapper">
           {/* <Die />
           <img src={require('../static/images/dice-six-faces-one.svg')} /> */}
-          <span>You are {this.props.playerColor}</span>
+          <span>You are {playerColor}</span>
           {yourTurn}
           {rollBtn}
           {yourRoll}
         </div>
         <KnockedPieces knocked={this.state.game.knocked} moveIn={this.moveIn} />
-        <table>
-          <tbody>
-            <Row
-              position="top"
-              selectedSlot={this.state.selectedSlot}
-              highlightedSlots={this.state.highlightedSlots}
-              handler={this.selectSlot}
-              moveHandler={this.makeMove}
-              moveHomeHandler={this.moveHome}
-              homeCount={this.state.game.home.red}
-              slots={this.state.game.slots.slice(0, 12).reverse()}
-            />
-            <Row
-              position="bottom"
-              selectedSlot={this.state.selectedSlot}
-              highlightedSlots={this.state.highlightedSlots}
-              handler={this.selectSlot}
-              moveHandler={this.makeMove}
-              moveHomeHandler={this.moveHome}
-              homeCount={this.state.game.home.white}
-              slots={this.state.game.slots.slice(12, 24)}
-            />
-          </tbody>
-        </table>
+        <table>{rows}</table>
       </div>
     );
   }

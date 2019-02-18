@@ -85,7 +85,7 @@ export default class Row extends Component {
       );
     }
 
-    let homeColor = this.props.position == 'top' ? 'red' : 'white';
+    let homeColor = this.props.color;
 
     let homeClasses = classNames(
       'home',
