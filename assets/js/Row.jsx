@@ -61,6 +61,12 @@ export default class Row extends Component {
     let triangle = <div className="triangle" />;
     // TODO: create middle row
     for (let i = 0; i < this.props.slots.length; i++) {
+      if (i == 6) {
+        slots.push(
+          <td key={'knocked-' + this.props.color} className="knocked" />
+        );
+      }
+
       let slot = this.props.slots[i];
       var tdClasses = classNames(
         slot.owner || '',
