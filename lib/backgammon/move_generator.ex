@@ -59,8 +59,39 @@ defmodule Backgammon.MoveGenerator do
     |> Enum.filter(&(can_move_from?(&1, player)))
     |> Enum.map(&(convert_to_move(&1)))
 
-    moves_home
+
+
+    high_point_move = high_point_move(home_board, dice, player)
+    moves_home ++ high_point_move
   end
+
+  def high_point_move(_, dice, _) when length(dice) == 0, do: []
+
+  def high_point_move(home_board, dice, player) do
+    max_dice = Enum.max(dice)
+    max_point = max_point(home_board, 6, player)
+
+    if max_dice > max_point do
+      {:ok, %{idx: max_slot}} = Enum.fetch(home_board, 6 - max_point)
+      [%{from: max_slot, to: :home, die: max_dice}]
+    else
+      []
+    end
+  end
+
+
+  def max_point([], _cur_point, _player) do
+    0
+  end
+
+  def max_point([cur_slot | home_board], cur_point, player) do
+    if Map.has_key?(cur_slot, :owner) and cur_slot.owner == player do
+      cur_point
+    else
+      max_point(home_board, cur_point - 1, player)
+    end
+  end
+
 
   def convert_to_move({slot, die}) do
     %{
@@ -70,7 +101,7 @@ defmodule Backgammon.MoveGenerator do
     }
   end
 
-  def can_move_from?({slot, die}, player) do
+  def can_move_from?({slot, _die}, player) do
     Map.has_key?(slot, :owner) and slot.owner == player
   end
 
@@ -133,7 +164,7 @@ defmodule Backgammon.MoveGenerator do
     nil
   end
 
-  def move_to_slot([slot | rest], 0, initial_dice, player) do
+  def move_to_slot([slot | _rest], 0, initial_dice, player) do
     if !Map.has_key?(slot, :owner) or
               slot.owner == player or
               slot.num == 1 do
@@ -143,7 +174,7 @@ defmodule Backgammon.MoveGenerator do
     end
   end
 
-  def move_to_slot([slot | rest], dice, initial_dice, player) do
+  def move_to_slot([_slot | rest], dice, initial_dice, player) do
     move_to_slot(rest, dice - 1, initial_dice, player)
   end
 end
