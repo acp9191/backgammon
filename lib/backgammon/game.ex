@@ -47,10 +47,28 @@ defmodule Backgammon.Game do
     ]
   end
 
+  def winner(game) do
+    if has_won?(game, :red) do
+      :red
+    else
+      if has_won?(game, :white) do
+        :white
+      else
+        ""
+      end
+    end
+  end
+
+  def has_won?(game, color) do
+    game.home[color] == 15
+  end
+
+
   def client_view(game, user) do
     game
     |> Map.put(:possible_moves, MoveGenerator.possible_moves(game))
     |> Map.put(:color, game.players[user])
+    |> Map.put(:winner, winner(game))
     |> Map.delete(:players)
   end
 
