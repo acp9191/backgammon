@@ -10,17 +10,17 @@ defmodule Backgammon.Game do
       },
       home: %{
         red: 0,
-        white: 0,
+        white: 14,
       },
       whose_turn: :white,
-      current_dice: [],
+      current_dice: [6, 4],
       players: %{}
     }
   end
 
   def init_slots() do
     [
-      %{idx: 0, owner: :white, num: 2},
+      %{idx: 0},
       %{idx: 1},
       %{idx: 2},
       %{idx: 3},
@@ -31,19 +31,19 @@ defmodule Backgammon.Game do
       %{idx: 8},
       %{idx: 9},
       %{idx: 10},
-      %{idx: 11, owner: :white, num: 5},
+      %{idx: 11},
       %{idx: 12, owner: :red, num: 5},
       %{idx: 13},
       %{idx: 14},
       %{idx: 15},
-      %{idx: 16, owner: :white, num: 3},
+      %{idx: 16},
       %{idx: 17},
-      %{idx: 18, owner: :white, num: 5},
+      %{idx: 18},
       %{idx: 19},
       %{idx: 20},
       %{idx: 21},
       %{idx: 22},
-      %{idx: 23, owner: :red, num: 2},
+      %{idx: 23, owner: :white, num: 1},
     ]
   end
 
@@ -65,11 +65,19 @@ defmodule Backgammon.Game do
 
 
   def client_view(game, user) do
-    game
+    winner = winner(game)
+
+    view = game
     |> Map.put(:possible_moves, MoveGenerator.possible_moves(game))
     |> Map.put(:color, game.players[user])
-    |> Map.put(:winner, winner(game))
+    |> Map.put(:winner, winner)
     |> Map.delete(:players)
+
+    if winner == "" do
+      view
+    else
+      Map.update(view, :current_dice, [], fn _ -> [] end)
+    end
   end
 
 
