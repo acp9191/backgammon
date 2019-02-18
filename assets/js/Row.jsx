@@ -57,16 +57,28 @@ export default class Row extends Component {
   }
 
   render() {
+    const {
+      position,
+      color,
+      selectedSlot,
+      highlightedSlots,
+      handler,
+      moveHandler,
+      moveHomeHandler,
+      homeCount,
+      slots
+    } = this.props;
+
     let isBlack = true;
     if (this.props.position == 'top') {
       isBlack = false;
     }
 
-    let slots = [];
+    let returnSlots = [];
     let triangle = <div className="triangle" />;
     for (let i = 0; i < this.props.slots.length; i++) {
       if (i == 6) {
-        slots.push(
+        returnSlots.push(
           <td key={'knocked-' + this.props.color} className="knocked" />
         );
       }
@@ -83,7 +95,7 @@ export default class Row extends Component {
       let handler = this.props.highlightedSlots.includes(slot.idx)
         ? this.props.moveHandler
         : this.props.handler;
-      slots.push(
+      returnSlots.push(
         <td
           key={slot.idx}
           data-index={slot.idx}
@@ -106,7 +118,7 @@ export default class Row extends Component {
         : ''
     );
 
-    slots.push(
+    returnSlots.push(
       <td
         onClick={this.props.moveHomeHandler}
         key={this.props.position}
@@ -120,6 +132,6 @@ export default class Row extends Component {
       </td>
     );
 
-    return <tr className={this.props.position}>{slots}</tr>;
+    return <tr className={this.props.position}>{returnSlots}</tr>;
   }
 }
