@@ -9,7 +9,7 @@ use Mix.Config
 
 
 # Configures the endpoint
-config :backgammon, BackgammonWeb.Endpoint,
+config :backgammon_2, BackgammonWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "srsgAtljdoJ36z+VGabQfKmLq6rnBP+bbNCCPfhxYfJd9X62yKd28GHb9j1CYlR4",
   render_errors: [view: BackgammonWeb.ErrorView, accepts: ~w(html json)],

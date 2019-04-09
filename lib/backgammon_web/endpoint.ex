@@ -1,5 +1,5 @@
 defmodule BackgammonWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :backgammon
+  use Phoenix.Endpoint, otp_app: :backgammon_2
 
   socket "/socket", BackgammonWeb.UserSocket,
     websocket: true,
@@ -11,7 +11,7 @@ defmodule BackgammonWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :backgammon,
+    from: :backgammon_2,
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
