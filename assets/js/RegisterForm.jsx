@@ -31,34 +31,46 @@ const RegisterForm = withRouter(({ history }) => {
   }
 
   let registerForm = (
-    <div>
-      <input type="text" placeholder="First Name" onChange={updateFirstName} />
-      &nbsp;
-      <input type="text" placeholder="Last Name" onChange={updateLastName} />
-      &nbsp;
-      <input type="email" placeholder="Email" onChange={updateEmail} />
-      &nbsp;
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={updatePassword}
-        onKeyPress={e => {
-          if (e.key == 'Enter') {
-            register();
-          }
-        }}
-      />
-      &nbsp;
-      <button className="btn btn-secondary" onClick={register}>
+    <form>
+      <div className="form-group">
+        <label>First Name</label>
+        <input
+          type="text"
+          className="form-control"
+          onChange={updateFirstName}
+        />
+      </div>
+      <div className="form-group">
+        <label>Last Name</label>
+        <input type="text" className="form-control" onChange={updateLastName} />
+      </div>
+      <div className="form-group">
+        <label>Email</label>
+        <input type="email" className="form-control" onChange={updateEmail} />
+      </div>
+      <div className="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          className="form-control"
+          onChange={updatePassword}
+          onKeyPress={e => {
+            if (e.key == 'Enter') {
+              register();
+            }
+          }}
+        />
+      </div>
+      <button className="btn btn-primary" onClick={register}>
         Register
       </button>
-    </div>
+    </form>
   );
 
   return (
     <div className="mb-2">
       <div>
-        <h1>My Homepage</h1>
+        <h1>Backgammon</h1>
       </div>
       <div>{registerForm}</div>
     </div>

@@ -17,10 +17,9 @@ defmodule Backgammon2Web.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-
     get "/game/:game", PageController, :game
-
     post "/game/", PageController, :game
+    get "/register", PageController, :index
   end
 
   # Other scopes may use custom stacks.

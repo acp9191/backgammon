@@ -7,6 +7,7 @@ import _ from 'lodash';
 import { Launcher } from 'react-chat-window';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
+import RegisterForm from './RegisterForm';
 
 import channel from './channel';
 
