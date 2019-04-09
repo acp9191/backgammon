@@ -1,5 +1,5 @@
-defmodule BackgammonWeb.PageController do
-  use BackgammonWeb, :controller
+defmodule Backgammon2Web.PageController do
+  use Backgammon2Web, :controller
 
   def index(conn, _params) do
     render(conn, "index.html")

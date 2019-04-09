@@ -1,12 +1,12 @@
-defmodule BackgammonWeb do
+defmodule Backgammon2Web do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
 
   This can be used in your application as:
 
-      use BackgammonWeb, :controller
-      use BackgammonWeb, :view
+      use Backgammon2Web, :controller
+      use Backgammon2Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -19,19 +19,19 @@ defmodule BackgammonWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: BackgammonWeb
+      use Phoenix.Controller, namespace: Backgammon2Web
 
       import Plug.Conn
-      import BackgammonWeb.Gettext
-      alias BackgammonWeb.Router.Helpers, as: Routes
+      import Backgammon2Web.Gettext
+      alias Backgammon2Web.Router.Helpers, as: Routes
     end
   end
 
   def view do
     quote do
       use Phoenix.View,
-        root: "lib/backgammon_web/templates",
-        namespace: BackgammonWeb
+        root: "lib/backgammon2_web/templates",
+        namespace: Backgammon2Web
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
@@ -39,9 +39,9 @@ defmodule BackgammonWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import BackgammonWeb.ErrorHelpers
-      import BackgammonWeb.Gettext
-      alias BackgammonWeb.Router.Helpers, as: Routes
+      import Backgammon2Web.ErrorHelpers
+      import Backgammon2Web.Gettext
+      alias Backgammon2Web.Router.Helpers, as: Routes
     end
   end
 
@@ -56,7 +56,7 @@ defmodule BackgammonWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import BackgammonWeb.Gettext
+      import Backgammon2Web.Gettext
     end
   end
 

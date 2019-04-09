@@ -1,5 +1,5 @@
-defmodule BackgammonWeb.Router do
-  use BackgammonWeb, :router
+defmodule Backgammon2Web.Router do
+  use Backgammon2Web, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,7 +13,7 @@ defmodule BackgammonWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", BackgammonWeb do
+  scope "/", Backgammon2Web do
     pipe_through :browser
 
     get "/", PageController, :index
@@ -24,7 +24,7 @@ defmodule BackgammonWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", BackgammonWeb do
+  # scope "/api", Backgammon2Web do
   #   pipe_through :api
   # end
 end

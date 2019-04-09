@@ -1,6 +1,6 @@
-defmodule Backgammon do
+defmodule Backgammon2 do
   @moduledoc """
-  Backgammon keeps the contexts that define your domain
+  Backgammon2 keeps the contexts that define your domain
   and business logic.
 
   Contexts are also responsible for managing your data, regardless

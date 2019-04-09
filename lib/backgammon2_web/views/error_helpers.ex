@@ -1,4 +1,4 @@
-defmodule BackgammonWeb.ErrorHelpers do
+defmodule Backgammon2Web.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -36,9 +36,9 @@ defmodule BackgammonWeb.ErrorHelpers do
     # should be written to the errors.po file. The :count option is
     # set by Ecto and indicates we should also apply plural rules.
     if count = opts[:count] do
-      Gettext.dngettext(BackgammonWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(Backgammon2Web.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(BackgammonWeb.Gettext, "errors", msg, opts)
+      Gettext.dgettext(Backgammon2Web.Gettext, "errors", msg, opts)
     end
   end
 end

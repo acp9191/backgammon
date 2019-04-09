@@ -9,11 +9,11 @@ use Mix.Config
 
 
 # Configures the endpoint
-config :backgammon_2, BackgammonWeb.Endpoint,
+config :backgammon_2, Backgammon2Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "srsgAtljdoJ36z+VGabQfKmLq6rnBP+bbNCCPfhxYfJd9X62yKd28GHb9j1CYlR4",
-  render_errors: [view: BackgammonWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Backgammon.PubSub, adapter: Phoenix.PubSub.PG2]
+  render_errors: [view: Backgammon2Web.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Backgammon2.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,

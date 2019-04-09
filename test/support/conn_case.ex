@@ -1,4 +1,4 @@
-defmodule BackgammonWeb.ConnCase do
+defmodule Backgammon2Web.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -19,10 +19,10 @@ defmodule BackgammonWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      alias BackgammonWeb.Router.Helpers, as: Routes
+      alias Backgammon2Web.Router.Helpers, as: Routes
 
       # The default endpoint for testing
-      @endpoint BackgammonWeb.Endpoint
+      @endpoint Backgammon2Web.Endpoint
     end
   end
 

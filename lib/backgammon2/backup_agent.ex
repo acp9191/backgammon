@@ -1,4 +1,4 @@
-defmodule Backgammon.BackupAgent do
+defmodule Backgammon2.BackupAgent do
   use Agent
 
   def start_link(_args) do

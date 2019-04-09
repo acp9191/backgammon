@@ -1,4 +1,4 @@
-defmodule Backgammon.MixProject do
+defmodule Backgammon2.MixProject do
   use Mix.Project
 
   def project do
@@ -19,7 +19,7 @@ defmodule Backgammon.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Backgammon.Application, []},
+      mod: {Backgammon2.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

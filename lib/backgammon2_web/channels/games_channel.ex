@@ -1,14 +1,14 @@
-defmodule BackgammonWeb.GamesChannel do
-  use BackgammonWeb, :channel
+defmodule Backgammon2Web.GamesChannel do
+  use Backgammon2Web, :channel
 
-  alias Backgammon.Game
+  alias Backgammon2.Game
 
   def join("games:" <> name, %{"user" => user} = payload, socket) do
     if authorized?(payload) do
-      Backgammon.GameServer.reg(name)
-      Backgammon.GameServer.start(name)
+      Backgammon2.GameServer.reg(name)
+      Backgammon2.GameServer.start(name)
 
-      reply = Backgammon.GameServer.join(name, user)
+      reply = Backgammon2.GameServer.join(name, user)
 
       socket = socket
       |> assign(:name, name)
@@ -31,7 +31,7 @@ defmodule BackgammonWeb.GamesChannel do
 
   def handle_in("roll", _payload, socket) do
     user = socket.assigns[:user]
-    g = Backgammon.GameServer.roll(socket.assigns[:name], user)
+    g = Backgammon2.GameServer.roll(socket.assigns[:name], user)
     case g do
       {:ok, game} -> broadcast(socket, "update", %{game: Game.client_view(game, user)})
           {:noreply, socket}
@@ -41,14 +41,14 @@ defmodule BackgammonWeb.GamesChannel do
   end
 
   def handle_in("reset", _payload, socket) do
-    Backgammon.GameServer.reset(socket.assigns[:name])
+    Backgammon2.GameServer.reset(socket.assigns[:name])
     broadcast(socket, "reset", %{msg: "Game reset by #{socket.assigns[:user]}"})
     {:noreply, socket}
   end
 
   def handle_in("chat", payload, socket) do
     user = socket.assigns[:user]
-    g = Backgammon.GameServer.chat(socket.assigns[:name], payload["chat"], user)
+    g = Backgammon2.GameServer.chat(socket.assigns[:name], payload["chat"], user)
     case g do
       {:ok, game} -> broadcast(socket, "update", %{game: Game.client_view(game, user)})
                     {:noreply, socket}
@@ -63,7 +63,7 @@ defmodule BackgammonWeb.GamesChannel do
     %{"from" => from, "to" => to, "die" => die} = payload["move"]
     from_idx = parseFromVal(from)
     to_idx = parseToVal(to)
-    g = Backgammon.GameServer.move(socket.assigns[:name],
+    g = Backgammon2.GameServer.move(socket.assigns[:name],
                                     %{from: from_idx, to: to_idx, die: die},
                                     user)
 

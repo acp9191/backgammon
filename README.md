@@ -1,4 +1,4 @@
-# Backgammon
+# Backgammon 2
 
 To start your Phoenix server:
 

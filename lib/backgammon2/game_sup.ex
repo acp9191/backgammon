@@ -1,4 +1,4 @@
-defmodule Backgammon.GameSup do
+defmodule Backgammon2.GameSup do
   use DynamicSupervisor
 
   def start_link(arg) do
@@ -7,7 +7,7 @@ defmodule Backgammon.GameSup do
 
   @impl true
   def init(_arg) do
-    {:ok, _} = Registry.start_link(keys: :unique, name: Backgammon.GameReg)
+    {:ok, _} = Registry.start_link(keys: :unique, name: Backgammon2.GameReg)
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 

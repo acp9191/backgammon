@@ -1,4 +1,4 @@
-defmodule Backgammon.MoveGenerator do
+defmodule Backgammon2.MoveGenerator do
   # A Move is:
   # {from: Location, to: Location, die: Number}
   # rep a movement of a tile from the first location to the second

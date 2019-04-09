@@ -1,8 +1,8 @@
 defmodule GameTest do
   use ExUnit.Case
 
-  alias Backgammon.Game
-  alias Backgammon.MoveGenerator
+  alias Backgammon2.Game
+  alias Backgammon2.MoveGenerator
 
   test "possible moves for red with knocked pieces" do
     slots = [%{idx: 0}, %{idx: 1}, %{idx: 2}, %{idx: 3}]

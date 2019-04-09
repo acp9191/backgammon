@@ -1,7 +1,7 @@
-defmodule BackgammonWeb.Endpoint do
+defmodule Backgammon2Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :backgammon_2
 
-  socket "/socket", BackgammonWeb.UserSocket,
+  socket "/socket", Backgammon2Web.UserSocket,
     websocket: true,
     longpoll: false
 
@@ -42,5 +42,5 @@ defmodule BackgammonWeb.Endpoint do
     key: "_backgammon_key",
     signing_salt: "pUHC3+hm"
 
-  plug BackgammonWeb.Router
+  plug Backgammon2Web.Router
 end

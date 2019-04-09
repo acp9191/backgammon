@@ -1,4 +1,4 @@
-defmodule Backgammon.DataCase do
+defmodule Backgammon2.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -16,7 +16,7 @@ defmodule Backgammon.DataCase do
 
   using do
     quote do
-      import Backgammon.DataCase
+      import Backgammon2.DataCase
     end
   end
 

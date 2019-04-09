@@ -1,5 +1,5 @@
-defmodule Backgammon.Game do
-  alias Backgammon.MoveGenerator
+defmodule Backgammon2.Game do
+  alias Backgammon2.MoveGenerator
 
   def new do
     %{

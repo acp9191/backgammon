@@ -1,8 +1,8 @@
-defmodule BackgammonWeb.UserSocket do
+defmodule Backgammon2Web.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "games:*", BackgammonWeb.GamesChannel
+  channel "games:*", Backgammon2Web.GamesChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -26,7 +26,7 @@ defmodule BackgammonWeb.UserSocket do
   # Would allow you to broadcast a "disconnect" event and terminate
   # all active sockets and channels for a given user:
   #
-  #     BackgammonWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
+  #     Backgammon2Web.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
   def id(_socket), do: nil

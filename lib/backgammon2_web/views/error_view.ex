@@ -1,5 +1,5 @@
-defmodule BackgammonWeb.ErrorView do
-  use BackgammonWeb, :view
+defmodule Backgammon2Web.ErrorView do
+  use Backgammon2Web, :view
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.
