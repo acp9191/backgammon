@@ -1,11 +1,11 @@
 #!/bin/bash
 
 export MIX_ENV=prod
-export PORT=4793
+export PORT=4799
 
 echo "Stopping old copy of app, if any..."
 
-_build/prod/rel/backgammon/bin/backgammon stop || true
+_build/prod/rel/backgammon-2/bin/backgammon-2 stop || true
 
 echo "Starting app..."
 

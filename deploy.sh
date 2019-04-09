@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export MIX_ENV=prod
-export PORT=4793
+export PORT=4799
 export NODEBIN=`pwd`/assets/node_modules/.bin
 export PATH="$PATH:$NODEBIN"
 
@@ -24,5 +24,5 @@ mix release
 
 echo "Starting app..."
 
-_build/prod/rel/backgammon/bin/backgammon foreground
+_build/prod/rel/backgammon-2/bin/backgammon-2 foreground
 
