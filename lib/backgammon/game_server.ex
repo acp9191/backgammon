@@ -92,7 +92,7 @@ defmodule Backgammon.GameServer do
     {:reply, game, game}
   end
 
-  def handle_call({:reset, name}, _from, game) do
+  def handle_call({:reset, _name}, _from, game) do
     if Backgammon.Game.winner(game) != "" do
       {:reply, {:ok, "reset"}, Backgammon.Game.new()}
     else
