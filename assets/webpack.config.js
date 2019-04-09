@@ -39,6 +39,10 @@ module.exports = (env, options) => ({
         use: [MiniCssExtractPlugin.loader, 'css-loader']
       },
       {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+      },
+      {
         test: /\.(jpg|png|gif|svg)$/,
         loader: "file-loader",
         options: {
@@ -57,7 +61,7 @@ module.exports = (env, options) => ({
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.css']
+    extensions: ['.js', '.jsx', '.css', '.scss']
   },
   plugins: [
     new MiniCssExtractPlugin({

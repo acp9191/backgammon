@@ -1,3 +1,5 @@
+@import '~bootstrap/scss/bootstrap';
+
 body,
 table {
   font-family: 'Roboto',
@@ -178,7 +180,8 @@ span:not(.empty) {
 }
 
 h1,
-#index-page~form {
+#index-page~form,
+.register {
   text-align: center;
 }
 
@@ -201,4 +204,9 @@ h1,
 
 .leaderboard td {
   padding: 5px;
+}
+
+form {
+  max-width: 800px;
+  margin: 0 auto;
 }

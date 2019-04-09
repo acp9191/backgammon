@@ -2,27 +2,49 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Row from './Row';
 import Subheader from './Subheader';
-import Die from './Die';
+import Header from './Header';
 import _ from 'lodash';
 import { Launcher } from 'react-chat-window';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
 
-export default function gameInit(root, channel, name) {
-  channel
-    .join()
-    .receive('ok', resp => {
-      console.log('Joined successfully', resp);
-      ReactDOM.render(
-        <Backgammon
-          playerColor={resp.game.color}
-          resp={resp}
-          channel={channel}
-        />,
-        root
-      );
-    })
-    .receive('error', resp => {
-      console.log('Unable to join', resp);
-    });
+import channel from './channel';
+
+export default function root_init(node) {
+  ReactDOM.render(
+    <CookiesProvider>
+      <Router>
+        <Route
+          path="/"
+          exact={true}
+          render={() => (
+            <div>
+              <Header />
+            </div>
+          )}
+        />
+        <Route path="/game" exact={true} render={() => <Backgammon />} />
+        <Route path="/register" exact={true} render={() => <RegisterForm />} />
+      </Router>
+    </CookiesProvider>,
+    node
+  );
+  // channel
+  //   .join()
+  //   .receive('ok', resp => {
+  //     console.log('Joined successfully', resp);
+  //     ReactDOM.render(
+  //       <Backgammon
+  //         playerColor={resp.game.color}
+  //         resp={resp}
+  //         channel={channel}
+  //       />,
+  //       root
+  //     );
+  //   })
+  //   .receive('error', resp => {
+  //     console.log('Unable to join', resp);
+  //   });
 }
 
 class Backgammon extends Component {
@@ -30,7 +52,7 @@ class Backgammon extends Component {
     super(props);
     this.channel = props.channel;
     this.state = {
-      game: props.resp.game,
+      // game: props.resp.game,
       selectedSlot: null,
       highlightedSlots: [],
       messageList: []
@@ -44,13 +66,13 @@ class Backgammon extends Component {
     this.onMessageWasSent = this.onMessageWasSent.bind(this);
     this.reset = this.reset.bind(this);
 
-    this.channel.on('update', resp => {
-      this.update(resp);
-    });
+    // this.channel.on('update', resp => {
+    //   this.update(resp);
+    // });
 
-    this.channel.on('reset', resp => {
-      window.location.href = '/';
-    });
+    // this.channel.on('reset', resp => {
+    //   window.location.href = '/';
+    // });
   }
 
   mapMessages() {
@@ -205,7 +227,7 @@ class Backgammon extends Component {
       </tbody>
     );
 
-    return (
+    let game = (
       <div>
         <Subheader
           state={this.state}
@@ -224,5 +246,7 @@ class Backgammon extends Component {
         />
       </div>
     );
+
+    return <div>Hello World!</div>;
   }
 }
