@@ -24,9 +24,7 @@ defmodule Backgammon2Web.Router do
   end
 
   # Other scopes may use custom stacks.
-  scope "/api", Backgammon2Web do
-    pipe_through :api
-
-    resources "/users", UserController
-  end
+  # scope "/api", Backgammon2Web do
+  #   pipe_through :api
+  # end
 end
