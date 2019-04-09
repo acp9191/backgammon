@@ -6,7 +6,7 @@ defmodule Backgammon2.Repo.Migrations.CreateUsers do
       add :email, :string
       add :password_hash, :string
       add :first, :string
-      add :name, :string
+      add :last, :string
       add :wins, :integer
       add :losses, :integer
 

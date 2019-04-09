@@ -9,7 +9,7 @@ defmodule Backgammon2.Application do
     # List all child processes to be supervised
     children = [
       # Start the Ecto repository
-      # Backgammon2.Repo,
+      Backgammon2.Repo,
       # Start the endpoint when the application starts
       Backgammon2Web.Endpoint,
       Backgammon2.BackupAgent,
