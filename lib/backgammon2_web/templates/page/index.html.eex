@@ -2,18 +2,31 @@
   <div class="row">
     <div class="column">
       <h1 id="index-page">Join a Backgammon game!</h1>
-        <%= form_for @conn, "/game", fn f -> %>
+      <%= form_for @conn, "/game", fn f -> %>
 
-          <label>
-            Game Name: <%= text_input f, :game %>
-          </label>
+        <label>
+          Game Name: <%= text_input f, :game %>
+        </label>
 
-          <label>
-            User Name: <%= text_input f, :name %>
-          </label>
+        <label>
+          User Name: <%= text_input f, :name %>
+        </label>
 
-          <%= submit "Submit" %>
-        <% end %>
+        <%= submit "Submit" %>
+      <% end %>
+      <h1>Leaderboard</h1>
+      <table class="leaderboard">
+        <tbody>
+          <%= for {user, i} <- Enum.with_index(@leaders) do %>
+            <tr>
+              <td><%= i + 1%></td>
+              <td><%= user.first %> <%= user.last %></td>
+              <td><%= user.wins %>-<%= user.losses %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      
     </div>
   </div>
 </section>

@@ -15,5 +15,6 @@ alias Backgammon2.Users.User
 
 pwhash = Argon2.hash_pwd_salt("password")
 
-Repo.insert!(%User{email: "alice@example.com", first: "alice", last: "wonderland", wins: 5, losses: 5, password_hash: pwhash})
-Repo.insert!(%User{email: "bob@example.com", first: "bob", last: "marley", wins: 5, losses: 5, password_hash: pwhash})
+Repo.insert!(%User{email: "alice@example.com", first: "Alice", last: "Wonderland", wins: 5, losses: 5, password_hash: pwhash})
+Repo.insert!(%User{email: "bob@example.com", first: "Bob", last: "Marley", wins: 4, losses: 0, password_hash: pwhash})
+Repo.insert!(%User{email: "charlie@example.com", first: "Charlie", last: "Chaplin", wins: 5, losses: 0, password_hash: pwhash})
