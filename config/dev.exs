@@ -67,9 +67,9 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 # Configure your database
-# config :backgammon, Backgammon2.Repo,
-#   username: "postgres",
-#   password: "postgres",
-#   database: "backgammon_dev",
-#   hostname: "localhost",
-#   pool_size: 10
+config :backgammon_2, Backgammon2.Repo,
+  username: "backgammon_2",
+  password: "base12ball",
+  database: "backgammon2_dev",
+  hostname: "localhost",
+  pool_size: 10

@@ -7,6 +7,8 @@
 # General application configuration
 use Mix.Config
 
+config :backgammon_2,
+  ecto_repos: [Backgammon2.Repo]
 
 # Configures the endpoint
 config :backgammon_2, Backgammon2Web.Endpoint,
@@ -26,3 +28,10 @@ config :phoenix, :json_library, Jason
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
+
+config :backgammon_2, Backgammon2.Repo,
+  username: "backgammon_2",
+  password: "base12ball",
+  database: "backgammon2_dev",
+  hostname: "localhost",
+  pool_size: 10
