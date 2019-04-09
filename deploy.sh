@@ -24,5 +24,5 @@ mix release
 
 echo "Starting app..."
 
-_build/prod/rel/backgammon/bin/backgammon foreground
+_build/prod/rel/backgammon_2/bin/backgammon_2 foreground
 
