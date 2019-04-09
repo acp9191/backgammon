@@ -28,10 +28,10 @@ config :backgammon, BackgammonWeb.Endpoint,
   root: ".",
   version: Application.spec(:phoenix_distillery, :vsn),
   http: [:inet6, port: {:system, "PORT"}],
-  url: [host: "backgammon.zachwal.sh", port: 80],
+  url: [host: "backgammon-2.ultravioletmasterpiece.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: get_secret.("key_base"),
-  password: get_secret.("backgammon") # Manually make file match password
+  password: get_secret.("backgammon-2") # Manually make file match password
 
 # Do not print debug messages in production
 config :logger, level: :info

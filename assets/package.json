@@ -1,6 +1,7 @@
 {
   "repository": {},
   "license": "MIT",
+  "description": "Backgammon",
   "scripts": {
     "deploy": "webpack --mode production",
     "watch": "webpack --mode development --watch"
@@ -20,10 +21,10 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.0",
     "copy-webpack-plugin": "^4.5.0",
-    "css-loader": "^0.28.10",
+    "css-loader": "^2.1.1",
     "file-loader": "^3.0.1",
     "mini-css-extract-plugin": "^0.4.0",
-    "optimize-css-assets-webpack-plugin": "^4.0.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
     "react": "^16.8.2",
     "react-chat-window": "^1.1.1",
     "uglifyjs-webpack-plugin": "^1.2.4",
