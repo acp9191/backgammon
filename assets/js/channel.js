@@ -2,7 +2,11 @@ import { Socket } from 'phoenix';
 import api from './api';
 
 class ChannelWrapper {
-  init_channel(session) {
+
+  init_channel(session, gameName) {
+
+    console.log(session)
+
     let socket = new Socket('/socket', { params: session });
     socket.connect();
     socket.onError(() => {
@@ -17,14 +21,11 @@ class ChannelWrapper {
       //   data: session
       // });
 
-      let channel = socket.channel('homepage:' + session.user_id, {});
-      channel.join().receive('ok', resp => {
-        
-
-        
-
-
+      channel = socket.channel("games:" + gameName, {
+        "user": session.userName
       });
+
+      return channel;
       
     });
   }

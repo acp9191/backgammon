@@ -4,10 +4,8 @@ defmodule Backgammon2.Users.User do
 
 
   schema "users" do
-    field :email, :string
+    field :username, :string
     field :password_hash, :string
-    field :first, :string
-    field :last, :string
     field :wins, :integer
     field :losses, :integer
 
@@ -17,7 +15,7 @@ defmodule Backgammon2.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password_hash, :first, :last, :wins, :losses])
-    |> validate_required([:email, :password_hash, :first, :last])
+    |> cast(attrs, [:username, :password_hash, :wins, :losses])
+    |> validate_required([:username, :password_hash])
   end
 end

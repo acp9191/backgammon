@@ -20,17 +20,17 @@ class Server {
     document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
   }
 
-  create_session(email, password) {
+  create_session(username, password) {
     return this.send_post(
       '/api/authorize',
       {
-        email,
+        username,
         password
       },
       resp => {
         this.setCookie('backgammon-user-session', JSON.stringify(resp.data), 7);
 
-        channel.init_channel(resp.data);
+        // channel.init_channel(resp.data);
       },
       (request, _status, _error) => {
         if (request) {
@@ -40,19 +40,17 @@ class Server {
     );
   }
 
-  create_user(first, last, email, password, redirect) {
+  create_user(username, password, redirect) {
     return this.send_post(
       '/api/users',
       {
         user: {
-          first,
-          last,
-          email,
+          username,
           password
         }
       },
       () => {
-        this.create_session(email, password);
+        this.create_session(username, password);
         redirect();
       },
       (request, _status, _error) => {

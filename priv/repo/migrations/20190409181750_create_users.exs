@@ -3,17 +3,15 @@ defmodule Backgammon2.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :email, :string
+      add :username, :string
       add :password_hash, :string
-      add :first, :string
-      add :last, :string
-      add :wins, :integer
-      add :losses, :integer
+      add :wins, :integer, default: 0
+      add :losses, :integer, default: 0
 
       timestamps()
     end
 
-    create unique_index(:users, [:email])
+    create unique_index(:users, [:username])
 
   end
 end

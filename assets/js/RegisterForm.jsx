@@ -4,18 +4,10 @@ import { withRouter } from 'react-router-dom';
 import api from './api';
 
 const RegisterForm = withRouter(({ history }) => {
-  let firstName, lastName, email, password;
+  let username, password;
 
-  function updateFirstName(ev) {
-    firstName = ev.target.value;
-  }
-
-  function updateLastName(ev) {
-    lastName = ev.target.value;
-  }
-
-  function updateEmail(ev) {
-    email = ev.target.value;
+  function updateUsername(ev) {
+    username = ev.target.value;
   }
 
   function updatePassword(ev) {
@@ -27,26 +19,14 @@ const RegisterForm = withRouter(({ history }) => {
   }
 
   function register() {
-    api.create_user(firstName, lastName, email, password, redirect);
+    api.create_user(username, password, redirect);
   }
 
   let registerForm = (
     <div className="form">
       <div className="form-group">
-        <label>First Name</label>
-        <input
-          type="text"
-          className="form-control"
-          onChange={updateFirstName}
-        />
-      </div>
-      <div className="form-group">
-        <label>Last Name</label>
-        <input type="text" className="form-control" onChange={updateLastName} />
-      </div>
-      <div className="form-group">
-        <label>Email</label>
-        <input type="email" className="form-control" onChange={updateEmail} />
+        <label>Username</label>
+        <input type="text" className="form-control" onChange={updateUsername} />
       </div>
       <div className="form-group">
         <label>Password</label>

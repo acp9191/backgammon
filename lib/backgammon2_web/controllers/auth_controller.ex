@@ -5,8 +5,8 @@ defmodule Backgammon2Web.AuthController do
 
   action_fallback Backgammon2Web.FallbackController
 
-  def authorize(conn, %{"email" => email, "password" => password}) do
-    with user <- Users.get_user_by_email(email),
+  def authorize(conn, %{"username" => username, "password" => password}) do
+    with user <- Users.get_user_by_username(username),
           {:ok, user} <- Argon2.check_pass(user, password) do
       conn
       |> assign(:user_id, user.id)
@@ -14,8 +14,9 @@ defmodule Backgammon2Web.AuthController do
         "data" => %{
           "token" => Phoenix.Token.sign(Backgammon2Web.Endpoint, "user_id", user.id),
           "user_id" => user.id,
-          "email" => user.email,
-          "first" => user.first
+          "username" => user.username,
+          "wins" => user.wins,
+          "losses" => user.losses
         }
       })
     end

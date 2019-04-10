@@ -24,7 +24,16 @@ export default function root_init(node) {
             </div>
           )}
         />
-        <Route path="/game" exact={true} render={() => <Backgammon />} />
+        <Route
+          path="/game"
+          exact={true}
+          render={() => (
+            <div>
+              <Subheader />
+              <Backgammon />
+            </div>
+          )}
+        />
         <Route path="/register" exact={true} render={() => <RegisterForm />} />
       </Router>
     </CookiesProvider>,
@@ -51,13 +60,17 @@ export default function root_init(node) {
 class Backgammon extends Component {
   constructor(props) {
     super(props);
-    this.channel = props.channel;
+    // this.channel = props.channel;
     this.state = {
       // game: props.resp.game,
       selectedSlot: null,
       highlightedSlots: [],
       messageList: []
     };
+
+    channel.channel.join().receive('ok', resp => {
+      console.log('Joined successfully', resp);
+    });
 
     this.selectSlot = this.selectSlot.bind(this);
     this.getRoll = this.getRoll.bind(this);

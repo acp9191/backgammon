@@ -12,9 +12,7 @@ defmodule Backgammon2Web.UserView do
 
   def render("user.json", %{user: user}) do
     %{id: user.id,
-      email: user.email,
-      first: user.first,
-      last: user.last,
+      username: user.username,
       wins: user.wins,
       losses: user.losses}
   end
