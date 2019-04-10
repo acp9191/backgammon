@@ -201,6 +201,11 @@ h1,
 
 .leaderboard {
   margin: 0 auto;
+  text-align: center;
+}
+
+.leaderboard tr:nth-child(1) {
+  font-size: 30px;
 }
 
 .leaderboard td {
@@ -214,4 +219,5 @@ h1,
 
 .leaderboard-title {
   padding-top: 15px;
+  text-decoration: underline;
 }
