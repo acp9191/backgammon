@@ -66,7 +66,16 @@ const Header = withRouter(({ history, session, dispatch, cookies }) => {
       </div>
       <div className="form-group">
         <label>Join Game</label>
-        <input type="text" className="form-control" onChange={updateGameName} />
+        <input
+          type="text"
+          className="form-control"
+          onKeyPress={e => {
+            if (e.key == 'Enter') {
+              join();
+            }
+          }}
+          onChange={updateGameName}
+        />
       </div>
 
       {/* <Link to={'/game/' + gameName}>

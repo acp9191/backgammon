@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import classNames from 'classnames/bind';
 
-export default class Row extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  drawPieces(count, color, isTop, isHome) {
+const Row = ({
+  isTop,
+  color,
+  playerColor,
+  // selectedSlot,
+  // highlightedSlots,
+  handler,
+  moveHandler,
+  moveHomeHandler,
+  moveInHandler,
+  homeCount,
+  knockedCount,
+  slots
+}) => {
+  function drawPieces(count, color, isTop, isHome) {
     const height = 250 / 15;
     const width = 50;
     const sideLength = 40;
@@ -44,101 +53,87 @@ export default class Row extends Component {
     return svgs;
   }
 
-  getSvgs(slot, isTop) {
+  function getSvgs(slot, isTop) {
     let svgs = [];
     if (slot.hasOwnProperty('num')) {
-      svgs = this.drawPieces(slot.num, slot.owner, isTop, false);
+      svgs = drawPieces(slot.num, slot.owner, isTop, false);
     }
     return svgs;
   }
 
-  getHomePieces(count, color, isTop) {
+  function getHomePieces(count, color, isTop) {
     let svgs = [];
     if (count > 0) {
-      svgs = this.drawPieces(count, color, isTop, true);
+      svgs = drawPieces(count, color, isTop, true);
     }
     return svgs;
   }
 
-  getKnocked(count, color, isTop) {
+  function getKnocked(count, color, isTop) {
     let svgs = [];
     if (count > 0) {
-      svgs = this.drawPieces(count, color, isTop, false);
+      svgs = drawPieces(count, color, isTop, false);
     }
     return svgs;
   }
 
-  render() {
-    const {
-      isTop,
-      color,
-      playerColor,
-      selectedSlot,
-      highlightedSlots,
-      handler,
-      moveHandler,
-      moveHomeHandler,
-      moveInHandler,
-      homeCount,
-      knockedCount,
-      slots
-    } = this.props;
+  let isBlack = isTop ? false : true;
 
-    let isBlack = isTop ? false : true;
+  let returnSlots = [];
 
-    let returnSlots = [];
-
-    for (let i = 0; i < slots.length; i++) {
-      let slot = slots[i];
-      if (i == 6) {
-        returnSlots.push(
-          <td
-            key={'knocked-' + color}
-            onClick={moveInHandler}
-            className="knocked"
-          >
-            {this.getKnocked(knockedCount, color, !isTop)}
-          </td>
-        );
-      }
-      let tdClasses = classNames(
-        isBlack ? 'black' : '',
-        slot.owner || '',
-        slot.owner == playerColor ? 'clickable' : '',
-        selectedSlot == slot.idx || highlightedSlots.includes(slot.idx)
-          ? 'highlighted'
-          : ''
-      );
-      let clickHandler = highlightedSlots.includes(slot.idx)
-        ? moveHandler
-        : handler;
+  for (let i = 0; i < slots.length; i++) {
+    let slot = slots[i];
+    if (i == 6) {
       returnSlots.push(
         <td
-          key={slot.idx}
-          data-index={slot.idx}
-          onClick={clickHandler}
-          className={tdClasses}
+          key={'knocked-' + color}
+          onClick={moveInHandler}
+          className="knocked"
         >
-          <div className="triangle" />
-          {this.getSvgs(slot, isTop)}
+          {getKnocked(knockedCount, color, !isTop)}
         </td>
       );
-      isBlack = !isBlack;
     }
-
-    let homeClasses = classNames(
-      'home',
-      highlightedSlots.includes('home-' + color) ? 'highlighted' : ''
+    let tdClasses = classNames(
+      isBlack ? 'black' : '',
+      slot.owner || '',
+      slot.owner == playerColor ? 'clickable' : ''
+      // selectedSlot == slot.idx || highlightedSlots.includes(slot.idx)
+      // ? 'highlighted'
+      // : ''
     );
-
+    let clickHandler = moveHandler;
+    // let clickHandler = highlightedSlots.includes(slot.idx)
+    // ? moveHandler
+    // : handler;
     returnSlots.push(
-      <td onClick={moveHomeHandler} key={isTop} className={homeClasses}>
-        {this.getHomePieces(homeCount, color, isTop)}
+      <td
+        key={slot.idx}
+        data-index={slot.idx}
+        onClick={clickHandler}
+        className={tdClasses}
+      >
+        <div className="triangle" />
+        {getSvgs(slot, isTop)}
       </td>
     );
-
-    let rowClass = isTop ? 'top' : 'bottom';
-
-    return <tr className={rowClass}>{returnSlots}</tr>;
+    isBlack = !isBlack;
   }
-}
+
+  let homeClasses = classNames(
+    'home'
+    // highlightedSlots.includes('home-' + color) ? 'highlighted' : ''
+  );
+
+  returnSlots.push(
+    <td onClick={moveHomeHandler} key={isTop} className={homeClasses}>
+      {getHomePieces(homeCount, color, isTop)}
+    </td>
+  );
+
+  let rowClass = isTop ? 'top' : 'bottom';
+
+  return <tr className={rowClass}>{returnSlots}</tr>;
+};
+
+export default Row;
