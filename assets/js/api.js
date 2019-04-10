@@ -64,6 +64,7 @@ class Server {
   }
 
   get_fresh_session(id) {
+    console.log(id)
     $.ajax(`/api/users/${id}`, {
     method: 'get',
       dataType: 'json',

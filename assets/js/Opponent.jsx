@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 const Opponent = ({ game, session }) => {
   let opponent = <span />;
-  if (game) {
+  if (game && session) {
     let players = Object.keys(game.players);
     if (players.length < 2) {
       opponent = <span>Waiting for opponent to join</span>;

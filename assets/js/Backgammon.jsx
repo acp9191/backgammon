@@ -19,8 +19,10 @@ const Backgammon = ({
 }) => {
   let firstTwelveSlots, lastTwelveSlots, topSlots, bottomSlots, topColor;
 
-  if (game && game.winner && !hasWon) {
-    api.get_fresh_session(session.id);
+  if (game && game.winner && !hasWon && session) {
+    console.log(session);
+    let id = session.id || session.user_id;
+    api.get_fresh_session(id);
   }
 
   function isAllowedToMove() {

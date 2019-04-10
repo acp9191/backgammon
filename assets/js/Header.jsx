@@ -13,7 +13,8 @@ const Header = withRouter(({ history, session, cookies, leaders }) => {
   if (!session) {
     session = cookies.get('backgammon-user-session');
     if (session) {
-      api.get_fresh_session(session.id);
+      let id = session.id || session.user_id;
+      api.get_fresh_session(id);
     }
   }
 
@@ -69,7 +70,7 @@ const Header = withRouter(({ history, session, cookies, leaders }) => {
 
   session_info = session ? (
     <div className="form">
-      <div className="center">Welcome back, {session.username}</div>
+      <div className="center">Welcome, {session.username}</div>
       <div className="center">
         Your record is {session.wins}-{session.losses}
       </div>
