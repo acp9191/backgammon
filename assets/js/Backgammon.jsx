@@ -3,61 +3,54 @@ import Row from './Row';
 import Subheader from './Subheader';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import store from './store';
+import channel from './channel';
 import { Launcher } from 'react-chat-window';
 
-const Backgammon = ({ game, session }) => {
-  let playerColor,
-    firstTwelveSlots,
-    lastTwelveSlots,
-    topSlots,
-    bottomSlots,
-    topColor;
+const Backgammon = ({ game, playerColor, selectedSlot }) => {
+  let firstTwelveSlots, lastTwelveSlots, topSlots, bottomSlots, topColor;
   // constructor(props) {
   //   super(props);
-  //   this.channel = socket.channel;
-  //   this.state = {
-  //     // game: props.resp.game,
+  //   channel = socket.channel;
+  //   state = {
+  //     // game: resp.game,
   //     selectedSlot: null,
   //     highlightedSlots: [],
   //     messageList: []
   //   };
 
-  //   this.selectSlot = this.selectSlot.bind(this);
-  //   this.getRoll = this.getRoll.bind(this);
-  //   this.makeMove = this.makeMove.bind(this);
-  //   this.moveIn = this.moveIn.bind(this);
-  //   this.moveHome = this.moveHome.bind(this);
-  //   this.onMessageWasSent = this.onMessageWasSent.bind(this);
-  //   this.reset = this.reset.bind(this);
+  //   selectSlot = selectSlot.bind(this);
+  //   getRoll = getRoll.bind(this);
+  //   makeMove = makeMove.bind(this);
+  //   moveIn = moveIn.bind(this);
+  //   moveHome = moveHome.bind(this);
+  //   onMessageWasSent = onMessageWasSent.bind(this);
+  //   reset = reset.bind(this);
 
-  //   this.channel.on('update', resp => {
-  //     this.update(resp);
+  //   channel.on('update', resp => {
+  //     update(resp);
   //   });
 
-  //   this.channel.on('reset', () => {
+  //   channel.on('reset', () => {
   //     window.location.href = '/';
   //   });
   // }
 
   function mapMessages() {
-    this.state.game.chat.map(msg => {
-      msg.author = msg.author == this.props.playerColor ? 'me' : 'them';
+    game.chat.map(msg => {
+      msg.author = msg.author == playerColor ? 'me' : 'them';
     });
-    this.setState({ messageList: this.state.game.chat });
+    setState({ messageList: game.chat });
   }
 
   function update(response) {
-    this.setState({ game: response.game }, () => {
-      this.mapMessages();
+    setState({ game: response.game }, () => {
+      mapMessages();
     });
   }
 
-  function getRoll() {
-    this.channel.push('roll');
-  }
-
   function isAllowedToMove() {
-    return this.state.game.whose_turn == this.props.playerColor;
+    return game.whose_turn == playerColor;
   }
 
   function getTd(td) {
@@ -65,18 +58,27 @@ const Backgammon = ({ game, session }) => {
   }
 
   function getMoveTaken(moveTo) {
-    return this.state.game.possible_moves.filter(
-      move => move.from == this.state.selectedSlot && move.to == moveTo
+    return game.possible_moves.filter(
+      move => move.from == selectedSlot && move.to == moveTo
     )[0];
   }
 
   function moveAndClearSlot(moveTaken) {
     if (moveTaken) {
-      this.channel.push('move', {
+      channel.socketChannel.push('move', {
         move: moveTaken
       });
     }
-    this.setState({ selectedSlot: null, highlightedSlots: [] });
+
+    store.dispatch({
+      type: 'NEW_SELECTED_SLOT',
+      data: null
+    });
+
+    store.dispatch({
+      type: 'NEW_HIGHLIGHTED_SLOTS',
+      data: []
+    });
   }
 
   function isHighlighted(td) {
@@ -84,54 +86,72 @@ const Backgammon = ({ game, session }) => {
   }
 
   function moveHome(e) {
-    if (this.isAllowedToMove()) {
-      let td = this.getTd(this.getTd(e.target));
-      if (this.isHighlighted(td)) {
-        this.moveAndClearSlot(this.getMoveTaken('home'));
+    if (isAllowedToMove()) {
+      let td = getTd(getTd(e.target));
+      if (isHighlighted(td)) {
+        moveAndClearSlot(getMoveTaken('home'));
       }
     }
   }
 
   function makeMove(e) {
-    if (this.isAllowedToMove()) {
-      let td = this.getTd(e.target.parentNode);
-      if (this.isHighlighted(td)) {
-        this.moveAndClearSlot(this.getMoveTaken(td.dataset.index));
+    if (isAllowedToMove()) {
+      let td = getTd(e.target.parentNode);
+      if (isHighlighted(td)) {
+        moveAndClearSlot(getMoveTaken(td.dataset.index));
       }
     }
   }
 
   function moveIn() {
-    if (this.isAllowedToMove()) {
+    if (isAllowedToMove()) {
       let moves = [];
-      for (let i = 0; i < this.state.game.possible_moves.length; i++) {
-        moves.push(this.state.game.possible_moves[i].to);
+      for (let i = 0; i < game.possible_moves.length; i++) {
+        moves.push(game.possible_moves[i].to);
       }
-      this.setState({ selectedSlot: 'knocked', highlightedSlots: moves });
+
+      store.dispatch({
+        type: 'NEW_SELECTED_SLOT',
+        data: 'knocked'
+      });
+
+      store.dispatch({
+        type: 'NEW_HIGHLIGHTED_SLOTS',
+        data: moves
+      });
     }
   }
 
   function selectSlot(e) {
-    if (this.isAllowedToMove() && this.state.game.current_dice.length > 0) {
-      let td = this.getTd(e.target.parentNode);
+    console.log('selectSlot');
+    if (isAllowedToMove() && game.current_dice.length > 0) {
+      let td = getTd(e.target.parentNode);
       let idx = td.dataset.index;
 
-      if (td.classList.contains(this.props.playerColor)) {
-        if (this.state.selectedSlot == idx) {
-          this.moveAndClearSlot(null);
+      console.log(idx);
+
+      if (td.classList.contains(playerColor)) {
+        if (selectedSlot == idx) {
+          moveAndClearSlot(null);
         } else {
           let moves = [];
-          for (let i = 0; i < this.state.game.possible_moves.length; i++) {
-            let move = this.state.game.possible_moves[i];
+          for (let i = 0; i < game.possible_moves.length; i++) {
+            let move = game.possible_moves[i];
+
             if (move.from == idx) {
-              let dest =
-                move.to == 'home' ? 'home-' + this.props.playerColor : move.to;
+              let dest = move.to == 'home' ? 'home-' + playerColor : move.to;
+              console.log(dest);
               moves.push(dest);
             }
           }
-          this.setState({
-            selectedSlot: idx,
-            highlightedSlots: moves
+          console.log('dispatching');
+          store.dispatch({
+            type: 'NEW_SELECTED_SLOT',
+            data: idx
+          });
+          store.dispatch({
+            type: 'NEW_HIGHLIGHTED_SLOTS',
+            data: moves
           });
         }
       }
@@ -139,18 +159,15 @@ const Backgammon = ({ game, session }) => {
   }
 
   function onMessageWasSent(chat) {
-    chat.author = this.props.playerColor;
-    this.channel.push('chat', { chat: chat });
+    chat.author = playerColor;
+    channel.socketChannel.push('chat', { chat: chat });
   }
 
   function reset() {
-    this.channel.push('reset');
+    channel.socketChannel.push('reset');
   }
 
   if (game) {
-    let username = session.username;
-    playerColor = game['players'][username];
-
     firstTwelveSlots = game.slots.slice(0, 12).reverse();
     lastTwelveSlots = game.slots.slice(12, 24);
 
@@ -165,9 +182,6 @@ const Backgammon = ({ game, session }) => {
       <Row
         isTop={true}
         color={topColor}
-        playerColor={playerColor}
-        // selectedSlot={this.state.selectedSlot}
-        // highlightedSlots={this.state.highlightedSlots}
         handler={selectSlot}
         moveHandler={makeMove}
         moveHomeHandler={moveHome}
@@ -178,9 +192,6 @@ const Backgammon = ({ game, session }) => {
       <Row
         isTop={false}
         color={playerColor}
-        playerColor={playerColor}
-        // selectedSlot={this.state.selectedSlot}
-        // highlightedSlots={this.state.highlightedSlots}
         handler={selectSlot}
         moveHandler={makeMove}
         moveHomeHandler={moveHome}
@@ -196,19 +207,17 @@ const Backgammon = ({ game, session }) => {
 
   let gameDisplay = (
     <div>
-      {/* <Subheader
-          state={this.state}
-          playerColor={playerColor}
-          getRoll={this.getRoll}
-          reset={this.reset}
-        /> */}
+      <Subheader
+        playerColor={playerColor}
+        // reset={reset}
+      />
       <table>{rows}</table>
       {/* <Launcher
         agentProfile={{
           teamName: 'Backgammon Chat'
         }}
-        onMessageWasSent={this.onMessageWasSent}
-        messageList={this.state.messageList}
+        onMessageWasSent={onMessageWasSent}
+        messageList={messageList}
         showEmoji
       /> */}
     </div>
@@ -218,7 +227,12 @@ const Backgammon = ({ game, session }) => {
 };
 
 function state2props(state) {
-  return { game: state.game, session: state.session };
+  return {
+    game: state.game,
+    playerColor: state.playerColor,
+    selectedSlot: state.selectedSlot,
+    highlightedSlots: state.highlightedSlots
+  };
 }
 
 export default connect(state2props)(Backgammon);

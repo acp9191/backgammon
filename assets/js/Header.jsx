@@ -8,12 +8,10 @@ import channel from './channel';
 import store from './store';
 
 const Header = withRouter(({ history, session, dispatch, cookies }) => {
-  // let { session, dispatch, cookies, history } = props;
   let session_info, email, password, gameName;
 
   if (!session) {
     session = cookies.get('backgammon-user-session');
-    console.log(session);
     if (session) {
       store.dispatch({
         type: 'NEW_SESSION',
@@ -21,8 +19,6 @@ const Header = withRouter(({ history, session, dispatch, cookies }) => {
       });
     }
   }
-
-  console.log(session);
 
   function updateEmail(ev) {
     email = ev.target.value;
@@ -77,10 +73,6 @@ const Header = withRouter(({ history, session, dispatch, cookies }) => {
           onChange={updateGameName}
         />
       </div>
-
-      {/* <Link to={'/game/' + gameName}>
-        <button className="btn btn-secondary">Join</button>
-      </Link> */}
       <button className="btn btn-primary" onClick={join}>
         Join
       </button>

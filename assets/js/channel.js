@@ -1,13 +1,8 @@
 import { Socket } from 'phoenix';
 import store from './store';
-// import api from './api';
 
 class ChannelWrapper {
-
   init_channel(session, gameName) {
-
-    // console.log(session, gameName)
-
     let socket = new Socket('/socket', { params: session });
     socket.connect();
     socket.onError(() => {
@@ -17,22 +12,32 @@ class ChannelWrapper {
       socket.disconnect();
     });
     socket.onOpen(() => {
-      let channel = socket.channel("games:" + gameName, {
+      this.socketChannel = socket.channel("games:" + gameName, {
         "user": session.username
       });
-      channel.join().receive('ok', resp => {
+
+      this.socketChannel.join().receive('ok', resp => {
         console.log(resp);
         store.dispatch({
           type: 'NEW_GAME',
           data: resp.game
-        })
-      })
+        });
 
-      // console.log(channel)
+        let username = session.username;
 
-      
+        store.dispatch({
+          type: 'NEW_PLAYER_COLOR',
+          data: resp.game['players'][username]
+        });
+      });
 
-      // window.location.href = '/game/' + gameName;
+      this.socketChannel.on('update', resp => {
+        console.log(resp)
+        store.dispatch({
+          type: 'NEW_GAME',
+          data: resp.game
+        });
+      });
     });
   }
 }

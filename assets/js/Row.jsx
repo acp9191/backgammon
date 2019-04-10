@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames/bind';
 
 const Row = ({
   isTop,
   color,
   playerColor,
-  // selectedSlot,
-  // highlightedSlots,
+  selectedSlot,
+  highlightedSlots,
   handler,
   moveHandler,
   moveHomeHandler,
@@ -97,15 +98,14 @@ const Row = ({
     let tdClasses = classNames(
       isBlack ? 'black' : '',
       slot.owner || '',
-      slot.owner == playerColor ? 'clickable' : ''
-      // selectedSlot == slot.idx || highlightedSlots.includes(slot.idx)
-      // ? 'highlighted'
-      // : ''
+      slot.owner == playerColor ? 'clickable' : '',
+      selectedSlot == slot.idx || highlightedSlots.includes(slot.idx)
+        ? 'highlighted'
+        : ''
     );
-    let clickHandler = moveHandler;
-    // let clickHandler = highlightedSlots.includes(slot.idx)
-    // ? moveHandler
-    // : handler;
+    let clickHandler = highlightedSlots.includes(slot.idx)
+      ? moveHandler
+      : handler;
     returnSlots.push(
       <td
         key={slot.idx}
@@ -121,8 +121,8 @@ const Row = ({
   }
 
   let homeClasses = classNames(
-    'home'
-    // highlightedSlots.includes('home-' + color) ? 'highlighted' : ''
+    'home',
+    highlightedSlots.includes('home-' + color) ? 'highlighted' : ''
   );
 
   returnSlots.push(
@@ -136,4 +136,13 @@ const Row = ({
   return <tr className={rowClass}>{returnSlots}</tr>;
 };
 
-export default Row;
+function state2props(state) {
+  return {
+    game: state.game,
+    session: state.session,
+    selectedSlot: state.selectedSlot,
+    highlightedSlots: state.highlightedSlots
+  };
+}
+
+export default connect(state2props)(Row);

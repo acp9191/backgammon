@@ -1,45 +1,46 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import Opponent from './Opponent';
 import WhoseTurn from './WhoseTurn';
 import RollBtn from './RollBtn';
 import RolledDice from './RolledDice';
 import Winner from './Winner';
 
-class Subheader extends Component {
-  isYourTurn() {
-    return (
-      this.props.state.game.whose_turn == this.props.playerColor &&
-      !this.props.state.game.winner
-    );
+import channel from './channel';
+
+const Subheader = ({ game, playerColor }) => {
+  function isYourTurn() {
+    return game.whose_turn == playerColor && !game.winner;
   }
 
-  render() {
-    const { state, playerColor, reset } = this.props;
+  return game ? (
+    <div className="subheader-wrapper">
+      <span>You are {playerColor}</span>
+      <Opponent players={Object.keys(game.players)} />
+      <WhoseTurn isYourTurn={isYourTurn()} isGameOver={game.winner} />
+      <RollBtn
+        showBtn={game.current_dice.length == 0 && isYourTurn()}
+        getRoll={() => {
+          channel.socketChannel.push('roll');
+        }}
+      />
+      <RolledDice isYourTurn={isYourTurn()} />
+      <Winner
+        winner={game.winner}
+        playerColor={playerColor}
+        // reset={reset}
+      />
+    </div>
+  ) : (
+    <span />
+  );
+};
 
-    return (
-      <div className="subheader-wrapper">
-        <span>You are {playerColor}</span>
-        <Opponent players={Object.keys(state.game.players)} />
-        <WhoseTurn
-          isYourTurn={this.isYourTurn()}
-          isGameOver={state.game.winner}
-        />
-        <RollBtn
-          showBtn={state.game.current_dice.length == 0 && this.isYourTurn()}
-          getRoll={this.props.getRoll}
-        />
-        <RolledDice
-          dice={state.game.current_dice}
-          isYourTurn={this.isYourTurn()}
-        />
-        <Winner
-          winner={state.game.winner}
-          playerColor={playerColor}
-          reset={reset}
-        />
-      </div>
-    );
-  }
+function state2props(state) {
+  return {
+    game: state.game,
+    playerColor: state.playerColor
+  };
 }
 
-export default Subheader;
+export default connect(state2props)(Subheader);
