@@ -16,7 +16,7 @@ import "phoenix_html"
 // Local files can be imported directly using relative paths, for example:
 // import socket from "./socket"
 
-import root_init from "./Backgammon";
+import root_init from "./Root";
 import store from './store';
 import $ from 'jquery';
 

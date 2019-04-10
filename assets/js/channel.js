@@ -6,7 +6,7 @@ class ChannelWrapper {
 
   init_channel(session, gameName) {
 
-    console.log(session, gameName)
+    // console.log(session, gameName)
 
     let socket = new Socket('/socket', { params: session });
     socket.connect();
@@ -20,13 +20,19 @@ class ChannelWrapper {
       let channel = socket.channel("games:" + gameName, {
         "user": session.username
       });
-
-      store.dispatch({
-        type: 'NEW_CHANNEL',
-        data: channel
+      channel.join().receive('ok', resp => {
+        console.log(resp);
+        store.dispatch({
+          type: 'NEW_GAME',
+          data: resp.game
+        })
       })
 
-      window.location.href = '/game/' + gameName;
+      // console.log(channel)
+
+      
+
+      // window.location.href = '/game/' + gameName;
     });
   }
 }

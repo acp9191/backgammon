@@ -8,8 +8,8 @@ defmodule Backgammon2Web.PageController do
     render(conn, "index.html", leaders: leaders)
   end
 
-  def game(conn, %{"name" => name, "game" => game}) do
-    render conn, "game.html", name: name, game: game
+  def game(conn, %{"game" => game}) do
+    render conn, "game.html", game: game
   end
 
 end

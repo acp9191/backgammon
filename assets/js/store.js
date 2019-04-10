@@ -28,15 +28,27 @@ function channel(state = null, action) {
   }
 }
 
+function game(state = null, action) {
+  switch (action.type) {
+    case 'NEW_GAME':
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 
 function root_reducer(state0, action) {
   let reducer = combineReducers({
     user,
     session,
-    channel
+    channel,
+    game
   });
 
   let state1 = reducer(state0, action);
+
+  console.log(state1)
 
   return deepFreeze(state1);
 }

@@ -1,17 +1,25 @@
 import React from 'react';
 import _ from 'lodash';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 import { connect } from 'react-redux';
 import api from './api';
 import channel from './channel';
+import store from './store';
 
-function Header(props) {
-  let { session, dispatch, cookies } = props;
+const Header = withRouter(({ history, session, dispatch, cookies }) => {
+  // let { session, dispatch, cookies, history } = props;
   let session_info, email, password, gameName;
 
   if (!session) {
     session = cookies.get('backgammon-user-session');
+    console.log(session);
+    if (session) {
+      store.dispatch({
+        type: 'NEW_SESSION',
+        data: session
+      });
+    }
   }
 
   console.log(session);
@@ -30,6 +38,7 @@ function Header(props) {
 
   function join() {
     channel.init_channel(session, gameName);
+    history.push(`/game/${gameName}`);
   }
 
   function login() {
@@ -59,6 +68,10 @@ function Header(props) {
         <label>Join Game</label>
         <input type="text" className="form-control" onChange={updateGameName} />
       </div>
+
+      {/* <Link to={'/game/' + gameName}>
+        <button className="btn btn-secondary">Join</button>
+      </Link> */}
       <button className="btn btn-primary" onClick={join}>
         Join
       </button>
@@ -104,7 +117,7 @@ function Header(props) {
       <div>{session_info}</div>
     </div>
   );
-}
+});
 
 function state2props(state) {
   return { session: state.session };
