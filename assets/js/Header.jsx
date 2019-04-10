@@ -7,7 +7,7 @@ import api from './api';
 import channel from './channel';
 import store from './store';
 
-const Header = withRouter(({ history, session, dispatch, cookies }) => {
+const Header = withRouter(({ history, session, cookies }) => {
   let session_info, email, password, gameName;
 
   if (!session) {
@@ -43,10 +43,9 @@ const Header = withRouter(({ history, session, dispatch, cookies }) => {
 
   function logout() {
     cookies.remove('backgammon-user-session');
-    let action = {
+    store.dispatch({
       type: 'LOGOUT_SESSION'
-    };
-    dispatch(action);
+    });
   }
 
   session_info = session ? (

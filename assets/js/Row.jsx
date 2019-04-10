@@ -140,6 +140,7 @@ function state2props(state) {
   return {
     game: state.game,
     session: state.session,
+    playerColor: state.playerColor,
     selectedSlot: state.selectedSlot,
     highlightedSlots: state.highlightedSlots
   };

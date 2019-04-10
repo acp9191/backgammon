@@ -1,4 +1,3 @@
-import channel from './channel';
 import store from './store';
 import $ from 'jquery';
 

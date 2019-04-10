@@ -1,5 +1,6 @@
 defmodule Backgammon2.Game do
   alias Backgammon2.MoveGenerator
+  alias Backgammon2.Users
 
   def new do
     %{
@@ -10,7 +11,7 @@ defmodule Backgammon2.Game do
       },
       home: %{
         red: 0,
-        white: 0,
+        white: 15,
       },
       whose_turn: :white,
       current_dice: [],
@@ -76,6 +77,25 @@ defmodule Backgammon2.Game do
     if winner == "" do
       view
     else
+
+      # get winner's username and update DB
+      if winner == view.color do
+        # Add 1 win to user
+
+        winner_user = Users.get_user_by_username(user)
+
+        Users.update_user(winner_user, %{wins: winner_user.wins + 1})
+
+        loser_username = hd(Enum.filter(Map.keys(game.players), &(&1 != user)))
+
+        loser_user = Users.get_user_by_username(loser_username)
+
+        Users.update_user(loser_user, %{losses: loser_user.losses + 1})
+
+        
+      end
+
+
       Map.update(view, :current_dice, [], fn _ -> [] end)
     end
   end
@@ -286,5 +306,4 @@ defmodule Backgammon2.Game do
       end
     end
   end
-
 end
