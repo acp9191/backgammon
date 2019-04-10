@@ -1,32 +1,32 @@
 import { Socket } from 'phoenix';
-import api from './api';
+import store from './store';
+// import api from './api';
 
 class ChannelWrapper {
 
   init_channel(session, gameName) {
 
-    console.log(session)
+    console.log(session, gameName)
 
     let socket = new Socket('/socket', { params: session });
     socket.connect();
     socket.onError(() => {
-      // store.dispatch({
-      //   type: 'LOGOUT_SESSION'
-      // });
+      store.dispatch({
+        type: 'LOGOUT_SESSION'
+      });
       socket.disconnect();
     });
     socket.onOpen(() => {
-      // store.dispatch({
-      //   type: 'NEW_SESSION',
-      //   data: session
-      // });
-
-      channel = socket.channel("games:" + gameName, {
-        "user": session.userName
+      let channel = socket.channel("games:" + gameName, {
+        "user": session.username
       });
 
-      return channel;
-      
+      store.dispatch({
+        type: 'NEW_CHANNEL',
+        data: channel
+      })
+
+      window.location.href = '/game/' + gameName;
     });
   }
 }

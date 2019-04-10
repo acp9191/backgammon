@@ -17,11 +17,12 @@ import "phoenix_html"
 // import socket from "./socket"
 
 import root_init from "./Backgammon";
+import store from './store';
 import $ from 'jquery';
 
 $(() => {
   let root = document.getElementById('root');
   if (root) {
-    root_init(root)
+    root_init(root, store)
   }
 });

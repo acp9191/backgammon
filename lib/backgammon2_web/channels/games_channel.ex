@@ -4,6 +4,9 @@ defmodule Backgammon2Web.GamesChannel do
   alias Backgammon2.Game
 
   def join("games:" <> name, %{"user" => user} = payload, socket) do
+
+    IO.puts("joining")
+
     if authorized?(payload) do
       Backgammon2.GameServer.reg(name)
       Backgammon2.GameServer.start(name)

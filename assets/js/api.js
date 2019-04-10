@@ -1,4 +1,5 @@
 import channel from './channel';
+import store from './store';
 import $ from 'jquery';
 
 class Server {
@@ -29,8 +30,10 @@ class Server {
       },
       resp => {
         this.setCookie('backgammon-user-session', JSON.stringify(resp.data), 7);
-
-        // channel.init_channel(resp.data);
+        store.dispatch({
+          type: 'NEW_SESSION',
+          data: resp.data
+        })
       },
       (request, _status, _error) => {
         if (request) {

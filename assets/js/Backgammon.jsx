@@ -6,36 +6,35 @@ import Header from './Header';
 import _ from 'lodash';
 import { Launcher } from 'react-chat-window';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import RegisterForm from './RegisterForm';
 
 import channel from './channel';
 
-export default function root_init(node) {
+export default function root_init(node, store) {
   ReactDOM.render(
     <CookiesProvider>
-      <Router>
-        <Route
-          path="/"
-          exact={true}
-          render={() => (
-            <div>
-              <Header />
-            </div>
-          )}
-        />
-        <Route
-          path="/game"
-          exact={true}
-          render={() => (
-            <div>
-              <Subheader />
-              <Backgammon />
-            </div>
-          )}
-        />
-        <Route path="/register" exact={true} render={() => <RegisterForm />} />
-      </Router>
+      <Provider store={store}>
+        <Router>
+          <Route path="/" exact={true} render={() => <Header />} />
+          <Route
+            path="/game"
+            exact={true}
+            render={() => (
+              <div>
+                <Subheader />
+                <Backgammon />
+              </div>
+            )}
+          />
+          <Route
+            path="/register"
+            exact={true}
+            render={() => <RegisterForm />}
+          />
+        </Router>
+      </Provider>
     </CookiesProvider>,
     node
   );
@@ -60,17 +59,13 @@ export default function root_init(node) {
 class Backgammon extends Component {
   constructor(props) {
     super(props);
-    // this.channel = props.channel;
+    this.channel = props.channel;
     this.state = {
       // game: props.resp.game,
       selectedSlot: null,
       highlightedSlots: [],
       messageList: []
     };
-
-    channel.channel.join().receive('ok', resp => {
-      console.log('Joined successfully', resp);
-    });
 
     this.selectSlot = this.selectSlot.bind(this);
     this.getRoll = this.getRoll.bind(this);
@@ -80,13 +75,13 @@ class Backgammon extends Component {
     this.onMessageWasSent = this.onMessageWasSent.bind(this);
     this.reset = this.reset.bind(this);
 
-    // this.channel.on('update', resp => {
-    //   this.update(resp);
-    // });
+    this.channel.on('update', resp => {
+      this.update(resp);
+    });
 
-    // this.channel.on('reset', resp => {
-    //   window.location.href = '/';
-    // });
+    this.channel.on('reset', () => {
+      window.location.href = '/';
+    });
   }
 
   mapMessages() {

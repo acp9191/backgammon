@@ -2,22 +2,19 @@ import React from 'react';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
+import { connect } from 'react-redux';
 import api from './api';
 import channel from './channel';
 
 function Header(props) {
-  let { session, cookies } = props;
-  let session_info, email, password, sessionObj, gameName;
+  let { session, dispatch, cookies } = props;
+  let session_info, email, password, gameName;
 
   if (!session) {
-    sessionObj = cookies.get('backgammon-user-session');
-
-    if (sessionObj) {
-      // channel.init_channel(sessionObj);
-    }
+    session = cookies.get('backgammon-user-session');
   }
 
-  console.log(sessionObj);
+  console.log(session);
 
   function updateEmail(ev) {
     email = ev.target.value;
@@ -31,7 +28,9 @@ function Header(props) {
     gameName = ev.target.value;
   }
 
-  function join() {}
+  function join() {
+    channel.init_channel(session, gameName);
+  }
 
   function login() {
     api.create_session(email, password);
@@ -39,17 +38,17 @@ function Header(props) {
 
   function logout() {
     cookies.remove('backgammon-user-session');
-    // let action = {
-    //   type: 'LOGOUT_SESSION'
-    // };
-    // dispatch(action);
+    let action = {
+      type: 'LOGOUT_SESSION'
+    };
+    dispatch(action);
   }
 
-  session_info = sessionObj ? (
+  session_info = session ? (
     <div className="form">
-      <div className="center">Welcome back, {sessionObj.username}</div>
+      <div className="center">Welcome back, {session.username}</div>
       <div className="center">
-        Your record is {sessionObj.wins}-{sessionObj.losses}
+        Your record is {session.wins}-{session.losses}
       </div>
       <div className="center">
         <button className="btn btn-secondary" onClick={() => logout()}>
@@ -107,4 +106,8 @@ function Header(props) {
   );
 }
 
-export default withCookies(Header);
+function state2props(state) {
+  return { session: state.session };
+}
+
+export default connect(state2props)(withCookies(Header));
