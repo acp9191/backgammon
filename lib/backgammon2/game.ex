@@ -65,7 +65,6 @@ defmodule Backgammon2.Game do
     game.home[color] == 15
   end
 
-
   def client_view(game, user) do
     winner = winner(game)
 
@@ -77,28 +76,18 @@ defmodule Backgammon2.Game do
     if winner == "" do
       view
     else
-
-      # get winner's username and update DB
       if winner == view.color do
-        # Add 1 win to user
-
+        
         winner_user = Users.get_user_by_username(user)
-
         Users.update_user(winner_user, %{wins: winner_user.wins + 1})
 
         loser_username = hd(Enum.filter(Map.keys(game.players), &(&1 != user)))
-
         loser_user = Users.get_user_by_username(loser_username)
-
         Users.update_user(loser_user, %{losses: loser_user.losses + 1})
-
-        
       end
-
       Map.update(view, :current_dice, [], fn _ -> [] end)
     end
   end
-
 
   # Functions from Game -> Game (taking actions on a game)
 

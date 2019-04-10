@@ -11,11 +11,14 @@ const Header = withRouter(({ history, session, cookies, leaders }) => {
   let session_info, email, password, gameName, leaderboard;
 
   if (!session) {
-    api.get_leaders();
     session = cookies.get('backgammon-user-session');
     if (session) {
       api.get_fresh_session(session.id);
     }
+  }
+
+  if (leaders.length == 0) {
+    api.get_leaders();
   }
 
   function updateEmail(ev) {
@@ -131,7 +134,7 @@ const Header = withRouter(({ history, session, cookies, leaders }) => {
         <h1>Backgammon</h1>
       </div>
       <div>{session_info}</div>
-      <h1>Leaderboard</h1>
+      <h1 className="leaderboard-title">Leaderboard</h1>
       <table className="leaderboard">
         <tbody>{leaderboard}</tbody>
       </table>

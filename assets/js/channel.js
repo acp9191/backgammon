@@ -17,7 +17,6 @@ class ChannelWrapper {
       });
 
       this.socketChannel.join().receive('ok', resp => {
-        console.log(resp);
         store.dispatch({
           type: 'NEW_GAME',
           data: resp.game
@@ -34,10 +33,7 @@ class ChannelWrapper {
       });
 
       this.socketChannel.on('update', resp => {
-        console.log(resp)
-
         this.update_messages(resp.game);
-
         store.dispatch({
           type: 'NEW_GAME',
           data: resp.game

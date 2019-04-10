@@ -23,19 +23,6 @@ const Backgammon = ({
     api.get_fresh_session(session.id);
   }
 
-  // function mapMessages() {
-  //   game.chat.map(msg => {
-  //     msg.author = msg.author == playerColor ? 'me' : 'them';
-  //   });
-  //   setState({ messageList: game.chat });
-  // }
-
-  // function update(response) {
-  //   setState({ game: response.game }, () => {
-  //     mapMessages();
-  //   });
-  // }
-
   function isAllowedToMove() {
     return game.whose_turn == playerColor;
   }
@@ -56,7 +43,6 @@ const Backgammon = ({
         move: moveTaken
       });
     }
-
     store.dispatch({
       type: 'NEW_SELECTED_SLOT',
       data: null

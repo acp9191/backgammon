@@ -2,7 +2,6 @@ defmodule Backgammon2Web.GamesChannel do
   use Backgammon2Web, :channel
 
   alias Backgammon2.Game
-  alias Backgammon2.Users
 
   def join("games:" <> name, %{"user" => user} = payload, socket) do
     if authorized?(payload) do
@@ -82,7 +81,6 @@ defmodule Backgammon2Web.GamesChannel do
   def parseToVal("home"), do: :home
   def parseToVal(toIdx) when is_number(toIdx), do: toIdx
 
-  # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
   end
