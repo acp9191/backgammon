@@ -18,6 +18,6 @@ defmodule Backgammon2.Users.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:email, :password_hash, :first, :last, :wins, :losses])
-    |> validate_required([:email, :password_hash, :first, :last, :wins, :losses])
+    |> validate_required([:email, :password_hash, :first, :last])
   end
 end

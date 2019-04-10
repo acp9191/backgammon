@@ -31,7 +31,7 @@ const RegisterForm = withRouter(({ history }) => {
   }
 
   let registerForm = (
-    <form>
+    <div className="form">
       <div className="form-group">
         <label>First Name</label>
         <input
@@ -64,7 +64,7 @@ const RegisterForm = withRouter(({ history }) => {
       <button className="btn btn-primary" onClick={register}>
         Register
       </button>
-    </form>
+    </div>
   );
 
   return (

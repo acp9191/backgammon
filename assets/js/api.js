@@ -1,4 +1,5 @@
 import channel from './channel';
+import $ from 'jquery';
 
 class Server {
   send_post(path, data, callback, error_callback) {

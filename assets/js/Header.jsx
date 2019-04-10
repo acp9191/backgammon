@@ -83,7 +83,7 @@ function Header(props) {
         </button>
       </form>
       <div className="register">
-        Don't have an account? Click here to{' '}
+        Don't have an account?{' '}
         <Link to={'/register'}>
           <button className="btn btn-secondary">Register</button>
         </Link>

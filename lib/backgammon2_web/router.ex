@@ -27,5 +27,6 @@ defmodule Backgammon2Web.Router do
     pipe_through :api
 
     resources "/users", UserController, except: [:new, :edit]
+    post "/authorize", AuthController, :authorize
   end
 end
