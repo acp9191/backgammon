@@ -11,6 +11,11 @@ defmodule Backgammon2Web.UserController do
     render(conn, "index.json", users: users)
   end
 
+  def leaders(conn, _params) do
+    users = Enum.take(Users.list_users(), 5)
+    render(conn, "index.json", users: users)
+  end
+
   def create(conn, %{"user" => user_params}) do
 
     with password <- user_params["password"],

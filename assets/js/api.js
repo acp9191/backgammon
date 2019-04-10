@@ -82,6 +82,20 @@ class Server {
     })
   }
 
+  get_leaders() {
+    $.ajax(`/api/leaders`, {
+      method: 'get',
+      dataType: 'json',
+      contentType: 'application/json; charset=UTF-8',
+      success: resp => {
+        console.log(resp)
+        store.dispatch({
+          type: "NEW_LEADERS",
+          data: resp.data
+        });
+      }
+    })
+  }
 }
 
 export default new Server();

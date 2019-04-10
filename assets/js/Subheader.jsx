@@ -20,6 +20,7 @@ const Subheader = withRouter(({ game, playerColor, history }) => {
       type: 'NEW_HAS_WON',
       data: false
     });
+    channel.socketChannel.push('reset');
     history.push('/');
   }
 

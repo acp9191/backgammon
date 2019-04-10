@@ -7,16 +7,14 @@ import api from './api';
 import channel from './channel';
 import store from './store';
 
-const Header = withRouter(({ history, session, cookies }) => {
-  let session_info, email, password, gameName;
+const Header = withRouter(({ history, session, cookies, leaders }) => {
+  let session_info, email, password, gameName, leaderboard;
 
   if (!session) {
+    api.get_leaders();
     session = cookies.get('backgammon-user-session');
     if (session) {
-      store.dispatch({
-        type: 'NEW_SESSION',
-        data: session
-      });
+      api.get_fresh_session(session.id);
     }
   }
 
@@ -47,6 +45,24 @@ const Header = withRouter(({ history, session, cookies }) => {
       type: 'LOGOUT_SESSION'
     });
   }
+
+  leaderboard = [];
+
+  leaders ? (
+    _.map(leaders, (leader, i) => {
+      leaderboard.push(
+        <tr key={leader.id}>
+          <td>{i + 1}.</td>
+          <td>{leader.username}</td>
+          <td>
+            {leader.wins}-{leader.losses}
+          </td>
+        </tr>
+      );
+    })
+  ) : (
+    <tr />
+  );
 
   session_info = session ? (
     <div className="form">
@@ -115,12 +131,16 @@ const Header = withRouter(({ history, session, cookies }) => {
         <h1>Backgammon</h1>
       </div>
       <div>{session_info}</div>
+      <h1>Leaderboard</h1>
+      <table className="leaderboard">
+        <tbody>{leaderboard}</tbody>
+      </table>
     </div>
   );
 });
 
 function state2props(state) {
-  return { session: state.session };
+  return { session: state.session, leaders: state.leaders };
 }
 
 export default connect(state2props)(withCookies(Header));

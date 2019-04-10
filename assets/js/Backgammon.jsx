@@ -9,25 +9,32 @@ import channel from './channel';
 import { Launcher } from 'react-chat-window';
 import api from './api';
 
-const Backgammon = ({ game, session, playerColor, selectedSlot, hasWon }) => {
+const Backgammon = ({
+  game,
+  session,
+  playerColor,
+  selectedSlot,
+  hasWon,
+  messageList
+}) => {
   let firstTwelveSlots, lastTwelveSlots, topSlots, bottomSlots, topColor;
 
   if (game && game.winner && !hasWon) {
     api.get_fresh_session(session.id);
   }
 
-  function mapMessages() {
-    game.chat.map(msg => {
-      msg.author = msg.author == playerColor ? 'me' : 'them';
-    });
-    setState({ messageList: game.chat });
-  }
+  // function mapMessages() {
+  //   game.chat.map(msg => {
+  //     msg.author = msg.author == playerColor ? 'me' : 'them';
+  //   });
+  //   setState({ messageList: game.chat });
+  // }
 
-  function update(response) {
-    setState({ game: response.game }, () => {
-      mapMessages();
-    });
-  }
+  // function update(response) {
+  //   setState({ game: response.game }, () => {
+  //     mapMessages();
+  //   });
+  // }
 
   function isAllowedToMove() {
     return game.whose_turn == playerColor;
@@ -138,10 +145,6 @@ const Backgammon = ({ game, session, playerColor, selectedSlot, hasWon }) => {
     channel.socketChannel.push('chat', { chat: chat });
   }
 
-  function reset() {
-    channel.socketChannel.push('reset');
-  }
-
   if (game) {
     firstTwelveSlots = game.slots.slice(0, 12).reverse();
     lastTwelveSlots = game.slots.slice(12, 24);
@@ -182,19 +185,16 @@ const Backgammon = ({ game, session, playerColor, selectedSlot, hasWon }) => {
 
   let gameDisplay = (
     <div>
-      <Subheader
-        playerColor={playerColor}
-        // reset={reset}
-      />
+      <Subheader playerColor={playerColor} />
       <table>{rows}</table>
-      {/* <Launcher
+      <Launcher
         agentProfile={{
           teamName: 'Backgammon Chat'
         }}
         onMessageWasSent={onMessageWasSent}
         messageList={messageList}
         showEmoji
-      /> */}
+      />
     </div>
   );
 
@@ -207,7 +207,8 @@ function state2props(state) {
     playerColor: state.playerColor,
     selectedSlot: state.selectedSlot,
     highlightedSlots: state.highlightedSlots,
-    hasWon: state.hasWon
+    hasWon: state.hasWon,
+    messageList: state.messageList
   };
 }
 

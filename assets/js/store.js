@@ -58,6 +58,24 @@ function hasWon(state = false, action) {
   }
 }
 
+function messageList(state = [], action) {
+  switch (action.type) {
+    case 'NEW_MESSAGE_LIST':
+      return action.data;
+    default:
+      return state;
+  }
+}
+
+function leaders(state = [], action) {
+  switch (action.type) {
+    case 'NEW_LEADERS':
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 
 function root_reducer(state0, action) {
   let reducer = combineReducers({
@@ -66,7 +84,9 @@ function root_reducer(state0, action) {
     playerColor,
     selectedSlot,
     highlightedSlots,
-    hasWon
+    hasWon,
+    messageList,
+    leaders
   });
 
   let state1 = reducer(state0, action);

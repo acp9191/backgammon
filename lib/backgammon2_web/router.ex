@@ -28,5 +28,6 @@ defmodule Backgammon2Web.Router do
 
     resources "/users", UserController, except: [:new, :edit]
     post "/authorize", AuthController, :authorize
+    get "/leaders", UserController, :leaders
   end
 end
