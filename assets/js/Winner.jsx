@@ -10,8 +10,16 @@ class Winner extends Component {
     } else if (winner) {
       winnerSpan = <span>You lost!</span>;
     }
-    let resetButton = winner ? <button onClick={reset}>Reset</button> : <span/>;
-    return <div>{winnerSpan} {resetButton}</div>;
+    let resetButton = winner ? (
+      <button onClick={reset}>Reset</button>
+    ) : (
+      <span />
+    );
+    return (
+      <span>
+        {winnerSpan} {resetButton}
+      </span>
+    );
   }
 }
 

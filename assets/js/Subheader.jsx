@@ -8,6 +8,7 @@ import RollBtn from './RollBtn';
 import RolledDice from './RolledDice';
 import Winner from './Winner';
 import channel from './channel';
+import store from './store';
 
 const Subheader = withRouter(({ game, playerColor, history }) => {
   function isYourTurn() {
@@ -15,6 +16,10 @@ const Subheader = withRouter(({ game, playerColor, history }) => {
   }
 
   function reset() {
+    store.dispatch({
+      type: 'NEW_HAS_WON',
+      data: false
+    });
     history.push('/');
   }
 

@@ -11,7 +11,7 @@ defmodule Backgammon2.Game do
       },
       home: %{
         red: 0,
-        white: 15,
+        white: 0,
       },
       whose_turn: :white,
       current_dice: [],
@@ -94,7 +94,6 @@ defmodule Backgammon2.Game do
 
         
       end
-
 
       Map.update(view, :current_dice, [], fn _ -> [] end)
     end

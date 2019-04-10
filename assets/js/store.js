@@ -49,6 +49,15 @@ function highlightedSlots(state = [], action) {
   }
 }
 
+function hasWon(state = false, action) {
+  switch (action.type) {
+    case 'NEW_HAS_WON':
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 
 function root_reducer(state0, action) {
   let reducer = combineReducers({
@@ -56,7 +65,8 @@ function root_reducer(state0, action) {
     game,
     playerColor,
     selectedSlot,
-    highlightedSlots
+    highlightedSlots,
+    hasWon
   });
 
   let state1 = reducer(state0, action);

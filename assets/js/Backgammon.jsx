@@ -1,40 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Row from './Row';
 import Subheader from './Subheader';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import store from './store';
 import channel from './channel';
 import { Launcher } from 'react-chat-window';
+import api from './api';
 
-const Backgammon = ({ game, playerColor, selectedSlot }) => {
+const Backgammon = ({ game, session, playerColor, selectedSlot, hasWon }) => {
   let firstTwelveSlots, lastTwelveSlots, topSlots, bottomSlots, topColor;
-  // constructor(props) {
-  //   super(props);
-  //   channel = socket.channel;
-  //   state = {
-  //     // game: resp.game,
-  //     selectedSlot: null,
-  //     highlightedSlots: [],
-  //     messageList: []
-  //   };
 
-  //   selectSlot = selectSlot.bind(this);
-  //   getRoll = getRoll.bind(this);
-  //   makeMove = makeMove.bind(this);
-  //   moveIn = moveIn.bind(this);
-  //   moveHome = moveHome.bind(this);
-  //   onMessageWasSent = onMessageWasSent.bind(this);
-  //   reset = reset.bind(this);
-
-  //   channel.on('update', resp => {
-  //     update(resp);
-  //   });
-
-  //   channel.on('reset', () => {
-  //     window.location.href = '/';
-  //   });
-  // }
+  if (game && game.winner && !hasWon) {
+    api.get_fresh_session(session.id);
+  }
 
   function mapMessages() {
     game.chat.map(msg => {
@@ -123,12 +103,9 @@ const Backgammon = ({ game, playerColor, selectedSlot }) => {
   }
 
   function selectSlot(e) {
-    console.log('selectSlot');
     if (isAllowedToMove() && game.current_dice.length > 0) {
       let td = getTd(e.target.parentNode);
       let idx = td.dataset.index;
-
-      console.log(idx);
 
       if (td.classList.contains(playerColor)) {
         if (selectedSlot == idx) {
@@ -140,11 +117,9 @@ const Backgammon = ({ game, playerColor, selectedSlot }) => {
 
             if (move.from == idx) {
               let dest = move.to == 'home' ? 'home-' + playerColor : move.to;
-              console.log(dest);
               moves.push(dest);
             }
           }
-          console.log('dispatching');
           store.dispatch({
             type: 'NEW_SELECTED_SLOT',
             data: idx
@@ -225,13 +200,14 @@ const Backgammon = ({ game, playerColor, selectedSlot }) => {
 
   return gameDisplay;
 };
-
 function state2props(state) {
   return {
     game: state.game,
+    session: state.session,
     playerColor: state.playerColor,
     selectedSlot: state.selectedSlot,
-    highlightedSlots: state.highlightedSlots
+    highlightedSlots: state.highlightedSlots,
+    hasWon: state.hasWon
   };
 }
 

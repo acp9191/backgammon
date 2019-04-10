@@ -62,6 +62,26 @@ class Server {
       }
     );
   }
+
+  get_fresh_session(id) {
+    $.ajax(`/api/users/${id}`, {
+    method: 'get',
+      dataType: 'json',
+      contentType: 'application/json; charset=UTF-8',
+      success: resp => {
+        this.setCookie('backgammon-user-session', JSON.stringify(resp.data), 7);
+        store.dispatch({
+          type: "NEW_SESSION",
+          data: resp.data
+        });
+        store.dispatch({
+          type: "NEW_HAS_WON",
+          data: true
+        });
+      }
+    })
+  }
+
 }
 
 export default new Server();
