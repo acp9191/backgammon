@@ -14,13 +14,11 @@ const Backgammon = ({
   session,
   playerColor,
   selectedSlot,
-  hasWon,
-  messageList
+  hasWon
 }) => {
   let firstTwelveSlots, lastTwelveSlots, topSlots, bottomSlots, topColor;
 
   if (game && game.winner && !hasWon && session) {
-    console.log(session);
     let id = session.id || session.user_id;
     api.get_fresh_session(id);
   }
@@ -175,14 +173,6 @@ const Backgammon = ({
     <div>
       <Subheader playerColor={playerColor} />
       <table>{rows}</table>
-      <Launcher
-        agentProfile={{
-          teamName: 'Backgammon Chat'
-        }}
-        onMessageWasSent={onMessageWasSent}
-        messageList={messageList}
-        showEmoji
-      />
     </div>
   );
 
@@ -195,8 +185,7 @@ function state2props(state) {
     playerColor: state.playerColor,
     selectedSlot: state.selectedSlot,
     highlightedSlots: state.highlightedSlots,
-    hasWon: state.hasWon,
-    messageList: state.messageList
+    hasWon: state.hasWon
   };
 }
 

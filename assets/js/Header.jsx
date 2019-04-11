@@ -15,11 +15,8 @@ const Header = withRouter(({ history, session, cookies, leaders }) => {
     if (session) {
       let id = session.id || session.user_id;
       api.get_fresh_session(id);
+      api.get_leaders();
     }
-  }
-
-  if (leaders.length == 0) {
-    api.get_leaders();
   }
 
   function updateEmail(ev) {

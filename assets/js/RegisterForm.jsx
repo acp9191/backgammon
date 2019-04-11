@@ -16,6 +16,7 @@ const RegisterForm = withRouter(({ history }) => {
 
   function redirect() {
     history.push('/');
+    api.get_leaders();
   }
 
   function register() {

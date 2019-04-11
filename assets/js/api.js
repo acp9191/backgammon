@@ -64,7 +64,6 @@ class Server {
   }
 
   get_fresh_session(id) {
-    console.log(id)
     $.ajax(`/api/users/${id}`, {
     method: 'get',
       dataType: 'json',
@@ -89,7 +88,6 @@ class Server {
       dataType: 'json',
       contentType: 'application/json; charset=UTF-8',
       success: resp => {
-        console.log(resp)
         store.dispatch({
           type: "NEW_LEADERS",
           data: resp.data

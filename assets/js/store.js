@@ -58,15 +58,6 @@ function hasWon(state = false, action) {
   }
 }
 
-function messageList(state = [], action) {
-  switch (action.type) {
-    case 'NEW_MESSAGE_LIST':
-      return action.data;
-    default:
-      return state;
-  }
-}
-
 function leaders(state = [], action) {
   switch (action.type) {
     case 'NEW_LEADERS':
@@ -85,7 +76,6 @@ function root_reducer(state0, action) {
     selectedSlot,
     highlightedSlots,
     hasWon,
-    messageList,
     leaders
   });
 

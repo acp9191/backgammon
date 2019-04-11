@@ -28,31 +28,15 @@ class ChannelWrapper {
           type: 'NEW_PLAYER_COLOR',
           data: resp.game['players'][username]
         });
-
-        this.update_messages(resp.game);
       });
 
       this.socketChannel.on('update', resp => {
-        this.update_messages(resp.game);
         store.dispatch({
           type: 'NEW_GAME',
           data: resp.game
         });
       });
     });
-  }
-
-  update_messages(game) {
-    let playerColor = store.getState().playerColor;
-
-    game.chat.map(msg => {
-      msg.author = msg.author == playerColor ? 'me' : 'them';
-    });
-
-    store.dispatch({
-      type: "NEW_MESSAGE_LIST",
-      data: game.chat
-    })
   }
 }
 
