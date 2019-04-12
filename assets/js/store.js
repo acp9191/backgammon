@@ -49,15 +49,6 @@ function highlightedSlots(state = [], action) {
   }
 }
 
-function hasWon(state = false, action) {
-  switch (action.type) {
-    case 'NEW_HAS_WON':
-      return action.data;
-    default:
-      return state;
-  }
-}
-
 function leaders(state = [], action) {
   switch (action.type) {
     case 'NEW_LEADERS':
@@ -75,7 +66,6 @@ function root_reducer(state0, action) {
     playerColor,
     selectedSlot,
     highlightedSlots,
-    hasWon,
     leaders
   });
 

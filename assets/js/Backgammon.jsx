@@ -3,22 +3,14 @@ import Row from './Row';
 import Subheader from './Subheader';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import store from './store';
 import channel from './channel';
-import { Launcher } from 'react-chat-window';
 import api from './api';
 
-const Backgammon = ({
-  game,
-  session,
-  playerColor,
-  selectedSlot,
-  hasWon
-}) => {
+const Backgammon = ({ game, session, playerColor, selectedSlot }) => {
   let firstTwelveSlots, lastTwelveSlots, topSlots, bottomSlots, topColor;
 
-  if (game && game.winner && !hasWon && session) {
+  if (game && game.winner && session) {
     let id = session.id || session.user_id;
     api.get_fresh_session(id);
   }
@@ -184,8 +176,7 @@ function state2props(state) {
     session: state.session,
     playerColor: state.playerColor,
     selectedSlot: state.selectedSlot,
-    highlightedSlots: state.highlightedSlots,
-    hasWon: state.hasWon
+    highlightedSlots: state.highlightedSlots
   };
 }
 
